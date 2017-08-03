@@ -87,6 +87,7 @@
 					<div class="input-box">
 						<input style="width: 366px;" type="text" placeholder="*.xlsx,*.xls,*.txt,*.csv" />
 						<em></em>
+						<input class="upload-file" type="file"/>
 					</div>
 				</li>
 			</ul>
@@ -94,6 +95,17 @@
 		<div class="import-data-btn">
 			<button>确定</button>
 			<button>取消</button>
+		</div>
+	</div>
+
+	<!--正向数据匹配-->
+	<div class="data-match-popup">
+		<h2>数据匹配</h2>
+		<div class="keep-con"></div>
+		<div class="popup-close"></div>
+		<div class="import-data-btn coad-data-btn">
+			<button>上一步</button>
+			<button>完成</button>
 		</div>
 	</div>
 

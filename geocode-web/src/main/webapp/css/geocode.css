@@ -75,6 +75,7 @@
 .keep-con>ul>li .input-box{ width: 420px; height: 40px; border: 1px solid #ccc; border-radius: 5px; padding: 10px; margin-left: 90px;}
 .keep-con>ul>li .input-box input{ width: 100%; height: 20px; line-height: 20px; padding-left: 10px; border: 0;}
 .keep-con>ul>li .input-box em{ float: right; display: inline-block; width: 32px; height: 16px; background: url(../images/sprite.png) no-repeat -56px -54px; border-left: 1px solid #ccc; margin-top: 2px;}
+.keep-con>ul>li .input-box input.upload-file{position: absolute; top: 140px; right: 85px;opacity: 0; float: right; display: inline-block; width: 32px; height: 32px; margin-top: 2px;}
 /*正向批量数据匹配-完全匹配*/
 .poilist>li .ml>h4{ width: 150px; height: 18px;}
 .poilist>li .ml>h4 a{ display: inline-block; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
@@ -95,19 +96,23 @@
 
 
 /*正向批量数据匹配*/
-.data-match-popup{ height: 570px; margin-top: -285px; display: block;}
+.data-match-popup{ height: 570px; margin-top: -285px; display: none;}
 .data-match-popup h2{ border: 0; margin-bottom: 0;}
-.keep-con>ul>li .match{ border-color: #4e8cf4; margin-left: 100px;}
-.keep-con>ul>li .match span{ display: inline-block; width: 100%; height: 18px; line-height: 18px; background: url(../images/popup-arr-down.png) no-repeat right center;}
+.keep-con>ul>li .match{ border-color: #4e8cf4; margin-left: 200px; width: 320px; position: relative;}
+.keep-con>ul>li .match span{ padding-left: 27px; display: inline-block; width: 100%; height: 18px; line-height: 18px; background: url(../images/popup-arr-down.png) no-repeat right center;}
 .keep-con>ul>li .match span.act{ border-bottom-left-radius: 0; border-bottom-right-radius: 0; background: url(../images/popup-arr-up.png) no-repeat right center; }
 .zd-con{ margin-left: 100px; position: relative;}
-.zd-con .zd-main{  width: 420px; height: 180px; border: 1px solid #4e8cf4; border-radius: 5px; overflow: auto; }
-.zd-con>ul>li{ padding: 0 10px; width: 100%; height: 30px;line-height: 30px; }
-.zd-con>ul>li.first{ border-top-right-radius: 5px; border-top-left-radius: 5px; }
-.zd-con>ul>li a{ display: inline-block; width: 100%; height: 100%; border-bottom: 1px solid #ccc; background: url(../images/popup-arr-down.png) no-repeat right center; }
-.zd-con>ul>li a span{ display: inline-block; padding-left: 12px; }
-.zd-con>ul>li:hover{ background: #edf3fe; }
-.zd-con>ul>li:hover a{ color: #4e8cf4;}
+.zd-con .zd-main{  width: 420px; height: 180px; border: 1px solid #4e8cf4; border-radius: 5px; overflow: auto; cursor: default;}
+.zd-con .zd-main>li{ padding: 0 10px; width: 100%; height: 30px;line-height: 30px; }
+.zd-con .zd-main>li.first{ border-top-right-radius: 5px; border-top-left-radius: 5px; }
+.zd-con .zd-main>li a{ display: inline-block; width: 100%; height: 100%; border-bottom: 1px solid #ccc;}
+.zd-con .zd-main>li a span{ display: inline-block; padding-left: 12px; }
+.zd-con .zd-main>li a span.left{ width: 90px; }
+.zd-con .zd-main>li a span.right{ width: 308px; cursor: pointer; padding-left: 38px;background: url(../images/popup-arr-down.png) no-repeat right center;}
+.zd-con .zd-main>li.select{ background: #edf3fe;}
+.zd-con .zd-main>li.select a{ color: #4e8cf4;}
+.zd-con .zd-main>li:hover{ background: #edf3fe; }
+.zd-con .zd-main>li:hover a{ color: #4e8cf4;}
 .zd-btn{ width: 32px; position: absolute; right: 10px; bottom: 5px; }
 .zd-btn a,.data-dis-btn a{display: inline-block; width: 32px; height: 32px; margin-bottom: 5px; }
 .zd-btn a.add{ background: url(../images/zd-ic.png) no-repeat; }
@@ -119,6 +124,8 @@
 .zd-form table tr{ height: 30px; border-bottom: 1px solid #eee; }
 .zd-form table tr td{ border-right: 1px solid #eee; }
 .zd-form table tr td.last{ border-right: 0; }
+.zd-form table tr th{ border-right: 1px solid #eee; }
+.zd-form table tr th.last{ border-right: 0; }
 .zd-btn a.left,.data-dis-btn a.left{ background: url(../images/zd-ic.png) no-repeat 0 -128px; }
 .zd-btn a.right,.data-dis-btn a.right{ background: url(../images/zd-ic.png) no-repeat 0 -160px; }
 
@@ -169,3 +176,42 @@
 .import-data-btn { display: inline-block; margin: 5px 0 10px 0; position: absolute; bottom: 0; right: 0; float: right;}
 .import-data-btn button{ color: #0c63f3; float: left; width: 60px; height: 30px; line-height: 30px; text-align: center; border-radius: 5px; border: 1px solid #4e8cf4; margin-right: 10px; background: #fff; cursor: pointer;}
 .import-data-btn button:hover{ color: #fff; background: #4e8cf4;}
+
+.input-box.match label{position: absolute; top: 0; left: -120px;}
+.data-match-popup .data-match-field{
+	display: none;
+    background: #fff;
+    position: absolute;
+    top: 38px;
+    width: 320px;
+    left: -1px;
+    margin-top: -1px;
+    border: 1px solid #4e8cf4;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    max-height: 120px;
+    z-index: 6000;
+}
+.data-match-popup .data-match-field li{height: 40px; line-height: 40px;}
+.data-match-popup .data-match-field li a{display: block; padding-left: 35px;}
+.data-match-popup .data-match-field li:hover{background: #4e8cf4;}
+.data-match-popup .data-match-field li:hover a{color: white;}
+.zd-form table{ width: 1500px;}
+.zd-form table td{ word-wrap: break-word; word-break: normal;}
+.zd-con .zd-select{display: none;
+    background: #fff;
+    position: absolute;
+    top: 30px;
+    width: 320px;
+    left: 100px;
+    margin-top: -1px;
+    border: 1px solid #4e8cf4;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    max-height: 120px;
+    z-index: 6000;}
+.zd-con .zd-select li{height: 30px; line-height: 30px;}
+.zd-con .zd-select li a{display: block; padding-left: 35px;}
+.zd-con .zd-select li:hover{background: #4e8cf4;}
+.zd-con .zd-select li:hover a{color: white;}
+.data-match-popup .select-field > .zd-main{overflow: hidden;}

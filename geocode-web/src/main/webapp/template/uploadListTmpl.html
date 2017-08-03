@@ -1,0 +1,15 @@
+{{if values.length == 0}}
+	<tr><td colspan="6" class="last">没有数据</td></tr>	
+{{else}}
+	{{each values as value index}}
+		<tr>
+			{{each value as v index2}}
+				{{if (index2+1) == value.length}}
+					<td class="last">{{v}}</td>
+				{{else}}
+					<td>{{v}}</td>
+				{{/if}}
+			{{/each}}
+		</tr>	
+	{{/each}}
+{{/if}}

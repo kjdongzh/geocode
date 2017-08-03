@@ -1,0 +1,103 @@
+<ul>
+	<li>
+		<label>匹配字段</label>
+		<div class="input-box match">
+			{{if geocodeType == 1}}
+				<label>地址</label>
+			{{else}}
+				<label>经度</label>
+			{{/if}}
+			<span></span>
+			<ul class="data-match-field">
+				{{each columns as column index}}
+					<li>
+						<a href="javascript:void(0)" type="{{index}}">{{column}}</a>
+					</li>
+				{{/each}}
+			</ul>
+		</div>
+		{{if geocodeType == 2}}
+			<div class="input-box match" style="margin-top: 10px">
+				<label>纬度</label>
+				<span></span>
+				<ul class="data-match-field">
+					{{each columns as column index}}
+						{{if (index+1) == columns.length}}
+							<li class="last">
+								<a href="javascript:void(0)" type="{{index}}">{{column}}</a>
+							</li>
+						{{else}}
+							<li>
+								<a href="javascript:void(0)" type="{{index}}">{{column}}</a>
+							</li>
+						{{/if}}
+					{{/each}}
+				</ul>
+			</div>
+		{{/if}}
+	</li>
+	{{if geocodeType == 1}}
+		<li>
+			<label>显示字段</label>
+			<div class="zd-con select-field">
+				<ul class="zd-main">
+				</ul>
+				<div class="zd-btn">
+					<a class="add" href="#"></a>
+					<a class="up" href="#"></a>
+					<a class="down" href="#"></a>
+					<a class="cancel" href="#"></a>
+				</div>
+				<ul class="zd-select">
+					<li><a href="javascript:void(0)" type="province">省份</a></li>
+					<li><a href="javascript:void(0)" type="city">城市</a></li>
+					<li><a href="javascript:void(0)" type="county">区县</a></li>
+					<li><a href="javascript:void(0)" type="town">乡镇</a></li>
+					<li><a href="javascript:void(0)" type="lon">经度</a></li>
+					<li><a href="javascript:void(0)" type="lat">纬度</a></li>
+				</ul>
+			</div>
+		</li>
+	{{/if}}
+	<li>
+		<label>数据展示</label>
+		<div class="zd-con">
+			<div class="zd-main" style=" padding: 10px;">
+				<div class="zd-form">
+					<table cellpadding="0" cellspacing="0" style="width: {{columns.length*200}}px;" type="1,4">
+
+						<tr>
+							{{each columns as column index}}
+								{{if (index+1) == columns.length}}
+									<th class="last">{{column}}</th>
+								{{else}}
+									<th>{{column}}</th>
+								{{/if}}
+							{{/each}}
+						</tr>
+						
+						{{each values as value index}}
+							<tr>
+								{{each value as v index2}}
+									{{if (index2+1) == value.length}}
+										<td class="last">{{v}}</td>
+									{{else}}
+										<td>{{v}}</td>
+									{{/if}}
+								{{/each}}
+							</tr>	
+						{{/each}}
+					</table>
+				</div>
+			</div>
+			{{if geocodeType == 1}}
+				<div class="zd-btn">
+			{{else}}
+				<div class="data-dis-btn" style="width: 420px;">
+			{{/if}}
+				<a class="left" href="#"></a>
+				<a class="right" href="#"></a>
+			</div>
+		</div>
+	</li>
+</ul>
