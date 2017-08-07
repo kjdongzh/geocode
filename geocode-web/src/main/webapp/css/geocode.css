@@ -79,6 +79,7 @@
 /*正向批量数据匹配-完全匹配*/
 .poilist>li .ml>h4{ width: 150px; height: 18px;}
 .poilist>li .ml>h4 a{ display: inline-block; width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+.poilist>li .ml>h4 input {border: 1px solid red;border-radius: 2px;padding-left: 5px;}
 .coad-data-oper{ position: absolute; top: 6px; right: 10px; height: 18px;}
 .coad-data-oper a{ float: left; display: inline-block; width: 18px; height: 18px; background: url(../images/sprite.png) no-repeat; margin-left: 10px;}
 .coad-data-oper a.bj{ background-position: 0 -162px;}
@@ -88,7 +89,7 @@
 .poilist>li:hover .coad-data-oper a.dw{ background-position: -18px -180px;}
 .poilist>li:hover .coad-data-oper a.sc{ background-position: -36px -180px;}
 .poilist>li.nomatch{ background: #fff2f2;}
-.data-radio{ margin-top: 18px; overflow: hidden; padding: 0 10px; display: none;}
+.data-radio{ overflow: hidden; padding: 0 10px; display: none;}
 .data-radio .types-select{ float: left; margin-left: 0;}
 .data-radio .types-select a{ display: block; height: 16px; line-height: 16px; margin-top: 10px; padding: 0;}
 .data-radio .types-select a i{ margin-top: 0;}
@@ -119,7 +120,7 @@
 .zd-btn a.up{ background: url(../images/zd-ic.png) no-repeat 0 -32px; }
 .zd-btn a.down{ background: url(../images/zd-ic.png) no-repeat 0 -64px; }
 .zd-btn a.cancel{ background: url(../images/zd-ic.png) no-repeat 0 -96px; }
-.zd-form{ min-width: 630px;}
+.zd-form{ min-width: 400px;}
 .zd-form table{text-align: center; font-size: 12PX;}
 .zd-form table tr{ height: 30px; border-bottom: 1px solid #eee; }
 .zd-form table tr td{ border-right: 1px solid #eee; }
@@ -196,7 +197,7 @@
 .data-match-popup .data-match-field li a{display: block; padding-left: 35px;}
 .data-match-popup .data-match-field li:hover{background: #4e8cf4;}
 .data-match-popup .data-match-field li:hover a{color: white;}
-.zd-form table{ width: 1500px;}
+.zd-form table{ min-width: 400px;}
 .zd-form table td{ word-wrap: break-word; word-break: normal;}
 .zd-con .zd-select{display: none;
     background: #fff;
@@ -215,3 +216,16 @@
 .zd-con .zd-select li:hover{background: #4e8cf4;}
 .zd-con .zd-select li:hover a{color: white;}
 .data-match-popup .select-field > .zd-main{overflow: hidden;}
+#data-page-turn{margin-left: 55px;}
+
+.custom-popup.leaflet-zoom-animated {min-width: 260px;}
+.custom-popup .leaflet-popup-close-button.close{top: 10px;right: 10px;color: transparent; width: 18px;height: 18px;background: url(../images/sprite.png) no-repeat -177px 0;}
+.custom-popup .leaflet-popup-close-button.close:hover{color: transparent; }
+.custom-popup .leaflet-popup-close-button.finish{top: 10px;right: 10px;color: transparent; width: 18px;height: 18px;background: url(../images/over.png);}
+.custom-popup .leaflet-popup-close-button.finish:hover{color: transparent;}
+.custom-popup .leaflet-popup-content-wrapper {margin-bottom: 20px;border-radius: 5px;}
+.custom-popup .leaflet-popup-content{min-width: 260px;margin-right: 25px;min-height: 100px;}
+.custom-popup .leaflet-popup-content h3 {color: #333;height: 30px;line-height: 30px;font-size: 16px;font-weight: normal;}
+.custom-popup .leaflet-popup-content p {color: #999;line-height: 30px;font-size: 14px; margin:0; word-wrap: break-word; word-break: normal;}
+.custom-popup .leaflet-popup-tip-container{bottom: 0px;}
+.custom-popup .tz-edit .ml{bottom: 20px;}

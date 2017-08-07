@@ -8,6 +8,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>地理编码服务系统</title>
+<link href="${pageContext.request.contextPath}/css/layui-page.css" rel="stylesheet" />
 <link href="${pageContext.request.contextPath}/css/reset.css" rel="stylesheet" />
 <link href="${pageContext.request.contextPath}/css/geocode.css" rel="stylesheet" />
 <link href="${pageContext.request.contextPath}/js/lib/leafletsdk/css/mc-all.css" rel="stylesheet" />
@@ -50,18 +51,10 @@
 	<div class="coad-result-wrap">
 		<ul class="poilist">
 		</ul>
-		<div class="turn-page">
-			<ul>
-				<li class="act"><a href="#">1</a></li>
-				<li><a href="#">2</a></li>
-				<li><a href="#">3</a></li>
-				<li><a href="#">4</a></li>
-				<li class="next"><a href="#">下一页<i></i></a></li>
-			</ul>
-		</div>
+		<div id="data-page-turn"></div>
 		<div class="data-radio">
 			<div class="types-select server-types">
-				<a href="#" class="on" style="padding-left: 0;"><i></i>仅显示成功数据</a>
+				<a href="#" ><i></i>仅显示成功数据</a>
 				<a href="#" ><i></i>仅显示失败数据</a>
 			</div>
 			<button>批量修改</button>
@@ -115,6 +108,7 @@
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/lib/jquery.form.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/lib/leafletsdk/geoway.all.min.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/lib/layer.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/lib/layui.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/lib/template.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/geocode/config.js"></script>
 	<script type="text/javascript">

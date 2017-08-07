@@ -1,0 +1,37 @@
+{{each results as result index}}
+	{{if result.status == "success"}}
+		<li type="{{result.lineNumber}}">
+	{{else}}
+		<li type="{{result.lineNumber}}" class="nomatch" style="height: 70px;">
+	{{/if}}
+		<div>
+			<div class="col-l"><a class="num-{{index+1}}" href="#"></a></div>
+			<div class="ml">
+				{{if result.status == "success"}}
+					<h4><a href="#" title="{{result.resultAddress}}">{{result.resultAddress}}</a></h4>
+					<ul>
+						<li style="width: 140px;">经度<span class="span-lng">{{result.resultLon}}</span></li>
+						<li>纬度<br><span class="span-lat">{{result.resultLat}}</span></li>
+					</ul>
+				{{else}}
+					{{if geocodeType == "positive"}}
+						<h4><a href="#" title="{{result.searchAddress}}">{{result.searchAddress}}</a></h4>
+					{{else}}
+						<h4><a href="#">{{result.searchLon}}-{{result.searchLat}}</a></h4>
+					{{/if}}
+					<ul>
+						<li style="width: 140px;">经度<span class="span-lng"></span></li>
+						<li>纬度<br><span class="span-lat"></span></li>
+					</ul>
+				{{/if}}
+			</div>
+	 		<div class="coad-data-oper">
+		 		{{if geocodeType == "positive"}}
+					<a class="bj" href="#"></a>
+					<a class="dw" href="#"></a>
+				{{/if}}
+				<a class="sc" href="#"></a>
+			</div>
+		</div>
+	</li>
+{{/each}}

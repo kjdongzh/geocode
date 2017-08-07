@@ -1,0 +1,18 @@
+@CHARSET "UTF-8";
+ .layui-laypage a,a{text-decoration:none}
+ .layui-laypage button,.layui-laypage input,.layui-nav{-webkit-box-sizing:border-box!important;-moz-box-sizing:border-box!important}
+ .layui-laypage{display:inline-block;*display:inline;*zoom:1;vertical-align:middle;margin-top:5px;font-size:0}.
+ .layui-laypage>:first-child,.layui-laypage>:first-child em{border-radius:2px 0 0 2px}
+ .layui-laypage>:last-child,.layui-laypage>:last-child em{border-radius:0 2px 2px 0}
+ .layui-laypage a,.layui-laypage span{display:inline-block;*display:inline;*zoom:1;vertical-align:middle;padding:0 10px;border:1px solid #e2e2e2;height:28px;line-height:28px;margin:0 -1px 5px 0;background-color:#fff;color:#333;font-size:12px}
+ .layui-laypage em{font-style:normal}
+ .layui-laypage span{color:#999;font-weight:700}
+ .layui-laypage .layui-laypage-curr{position:relative}
+ .layui-laypage .layui-laypage-curr em{position:relative;color:#fff;font-weight:400}
+ .layui-laypage .layui-laypage-curr .layui-laypage-em{position:absolute;left:-1px;top:-1px;padding:1px;width:100%;height:100%;background-color:#009688}
+ .layui-laypage-em{border-radius:2px}
+ .layui-laypage-next em,.layui-laypage-prev em{font-family:Sim sun;font-size:16px}
+ .layui-laypage .layui-laypage-total{height:30px;line-height:30px;margin-left:1px;border:none;font-weight:400}
+ .layui-laypage button,.layui-laypage input{height:30px;line-height:30px;border:1px solid #e2e2e2;border-radius:2px;vertical-align:top;background-color:#fff;box-sizing:border-box!important}
+ .layui-laypage input{width:50px;margin:0 5px;text-align:center}
+ .layui-laypage button{margin-left:5px;padding:0 15px;cursor:pointer}
