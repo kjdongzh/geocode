@@ -101,6 +101,41 @@
 			<button>完成</button>
 		</div>
 	</div>
+	
+	<!-- 数据批量修改 -->
+	<div class="data-modify-popup">
+		<h2>批量修改</h2>
+		<div class="keep-con">
+			<ul>
+				<li class="special-types">
+					<label>数据选择</label>
+					<div class="types-select server-types" style="margin-left: 100px;">
+						<a href="#" style="padding-left: 0;"><i></i>仅显示成功数据</a>
+						<a href="#" ><i></i>仅显示失败数据</a>
+					</div>
+				</li>
+				<li>
+					<label>数据展示</label>
+					<div class="zd-con">
+						<div class="zd-main" style=" width: 460px; height: 330px;">
+							<div class="zd-form">
+							</div>
+						</div>
+						<div class="data-dis-btn">
+							<button>删除</button>
+							<a class="right" href="#"></a>
+							<a class="left" href="#"></a>
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div class="popup-close"></div>
+		<div class="import-data-btn coad-data-btn">
+			<button>重新匹配</button>
+			<button>保存修改</button>
+		</div>
+	</div>
 
 	<div id="map"></div>
 	

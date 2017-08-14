@@ -1,3 +1,4 @@
+<!-- 批量匹配结果模板 -->
 {{each results as result index}}
 	{{if result.status == "success"}}
 		<li type="{{result.lineNumber}}">
@@ -20,8 +21,8 @@
 						<h4><a href="#">{{result.searchLon}}-{{result.searchLat}}</a></h4>
 					{{/if}}
 					<ul>
-						<li style="width: 140px;">经度<span class="span-lng"></span></li>
-						<li>纬度<br><span class="span-lat"></span></li>
+						<li style="width: 140px;">经度<span class="span-lng">{{result.resultLon}}</span></li>
+						<li>纬度<br><span class="span-lat"></span>{{result.resultLat}}</li>
 					</ul>
 				{{/if}}
 			</div>

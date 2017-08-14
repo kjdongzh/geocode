@@ -1,0 +1,37 @@
+<!-- 批量修改list模板 -->
+<table cellpadding="0" cellspacing="0" style="width: {{column.length*150}}px;" type="{{pageNum}},{{pageSum}},{{pageSize}}">
+	
+		<tr>
+			<th style="width: 40px;"></th>
+			{{each column as col index}}
+				{{if (index+1) == column.length}}
+					<th class="last">{{col}}</th>
+				{{else}}
+					<th>{{col}}</th>
+				{{/if}}
+			{{/each}}
+		</tr>
+		
+		{{each values as value index}}
+			{{if value.status == "fail"}}
+				<tr type="{{value.lineNumber}}" class="edt">
+			{{else}}
+				<tr type="{{value.lineNumber}}">
+			{{/if}}
+			
+			<td><span></span></td>
+			
+			{{each value.lineValue as v index2}}
+				{{if (index2+1) == value.lineValue.length}}
+					<td class="last">{{v}}</td>
+				{{else}}
+					<td>{{v}}</td>
+				{{/if}}
+			{{/each}}
+			
+			</tr>	
+		{{/each}}
+	
+</table>
+
+

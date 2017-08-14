@@ -18,16 +18,20 @@ G.Geocoding = {
 		layui.use('laypage', function(laypage) {
 			laypage({
 			    cont: 'data-page-turn',
-		        pages: 5,
+			    curr: 1,
+		        pages: 6,
 		        first: false,
-		        last: 5,
+		        last: 6,
 		        groups: 3,
 		        prev: '<em><</em>',
 		        next: '<em>></em>',
 		        skin: '#1E9FFF',
 		        jump: function(obj, first){
-		            var curr = obj.curr;
-		            that.getBatchList(curr);
+		        	if (!first) {
+		        		var curr = obj.curr;
+		        		var type = $('.coad-result-wrap .data-radio .types-select a.on').index() + 1;
+		        		that.getBatchList(curr, type);
+		        	}
 		        }
 		    });
 		});
@@ -63,6 +67,11 @@ G.Geocoding = {
 			var index = $(this).index('.src-tab-tit li');
 			$('.src-tab-list').eq(index).css({'z-index':2});
 			$('.src-tab-list').eq(index).siblings().css({'z-index':1});
+		});
+		
+		// popup关闭按钮
+		$('.popup-close').click(function() {
+			$(this).parent().hide();
 		});
 		
 		// 正逆向地理编码检索
@@ -160,9 +169,72 @@ G.Geocoding = {
 		
 		// 仅显示成功或失败的数据
 		$('.coad-result-wrap .data-radio .types-select a').click(function() {
-			$(this).addClass('on').siblings().removeClass('on');
-			var batchType = $(this).index() + 1;
+			$(this).toggleClass('on').siblings().removeClass('on');
+			var batchType = $('.coad-result-wrap .data-radio .types-select a.on').index() + 1;
 			that.getBatchList(1, batchType);
+		});
+		
+		// 批量修改
+		$('.coad-result-wrap .data-radio > button').click(function() { 
+			that.modify(1);
+		});
+		
+		// 批量修改中仅显示成功或失败的数据
+		$('.data-modify-popup .special-types .types-select a').click(function() {
+			$(this).toggleClass('on').siblings().removeClass('on');
+			var batchType = $('.data-modify-popup .special-types .types-select a.on').index() + 1;
+			that.modify(1, batchType);
+		});
+		
+		// 批量修改中上下页切换
+		$('.data-modify-popup .data-dis-btn a').click(function() {
+			var pageAttribute = $('.data-modify-popup .zd-form > table').attr('type');
+			var pageNum = parseInt(pageAttribute.split(',')[0]);
+			var pageSum = parseInt(pageAttribute.split(',')[1]);
+			var page = null;
+			if ($(this).hasClass('left')) {
+				if (pageNum == 1) {
+					return;
+				} else {
+					page = pageNum - 1;
+				}
+			} else if ($(this).hasClass('right')){
+				if (pageNum == pageSum) {
+					return;
+				} else {
+					page = pageNum + 1;
+				}
+			} else {
+				return;
+			}
+			var batchType = $('.data-modify-popup .special-types .types-select a.on').index() + 1;
+			that.modify(page, batchType);
+		});
+		
+	},
+	
+	// 批量修改
+	modify : function(pageNum, batchType) {
+		var that = this;
+		batchType = batchType ? batchType :  '0';
+		var url = G.restUrl + "/geocode/batchSourceList?batchId=" + that.batchId + "&pageNum=" + pageNum + "&batchType=" + batchType;
+		$.ajax({
+			url: url,
+			dataType : "jsonp",
+			jsonp : "callback",
+			success : function(data) {
+				if (data.status == 'ok') {
+					G.Template.render("batchSourceListTmpl", data, function(html) {
+						$('.data-modify-popup .zd-form').html(html);
+						$('.data-modify-popup').show();
+						$('.data-modify-popup .zd-form table tr td:nth-child(1) span').on('click', function() {
+							$(this).toggleClass('on');
+						});
+					})
+				} else {
+					return layer.alert(data.message, {icon: 2});
+				}
+			}
 		});
 	},
 	
@@ -430,8 +502,12 @@ G.Geocoding = {
 				return ;
 			} else {
 				var pageNum = parseInt(num_page.split(',')[0]);
+				var pageSum = parseInt(num_page.split(',')[2]);
+				if (pageNum == pageSum) {
+					return;
+				}
 				var pageSize = num_page.split(',')[1];
-				that.getUploadList(that.uploadId, pageNum +1, pageSize);
+				that.getUploadList(that.uploadId, pageNum + 1, pageSize);
 			}
 		});
 		
@@ -468,7 +544,8 @@ G.Geocoding = {
 			success : function(data) {
 				if (data.status == "ok") {
 					G.Template.render("uploadListTmpl", data, function(html) {
-						$('.data-match-popup .zd-form table').attr('type', data.pageNum + ',' + data.pageSize);
+						var pageSum = $('.data-match-popup .zd-form table').attr('type').split(',')[2];
+						$('.data-match-popup .zd-form table').attr('type', data.pageNum + ',' + data.pageSize + pageSum);
 						$('.data-match-popup .zd-form table tr').each(function(index) {
 							if (index != 0 ) {
 								$(this).remove();
@@ -503,6 +580,25 @@ G.Geocoding = {
 					$('.coad-result-wrap .turn-page').show();
 					$('.coad-result-wrap .data-radio').show();
 					$('.coad-result-wrap').show();
+					
+					layui.laypage({
+					    cont: 'data-page-turn',
+				        pages: data.pageSum,
+				        curr: data.pageNum,
+				        first: false,
+				        last: false,
+				        groups: 4,
+				        prev: '<em><</em>',
+				        next: '<em>></em>',
+				        skin: '#1E9FFF',
+				        jump: function(obj, first){
+				        	if (!first) {
+				        		var curr = obj.curr;
+				        		var type = $('.coad-result-wrap .data-radio .types-select a.on').index() + 1;
+				        		that.getBatchList(curr, type);
+				        	}
+				        }
+				    });
 					
 					that.vectorLayer.clearLayers();
 					
@@ -570,6 +666,7 @@ G.Geocoding = {
 		});
 	},
 	
+	// 匹配结果预览相关事件
 	bindMapEvents : function() {
 		var that = this;
 		
@@ -652,6 +749,9 @@ G.Geocoding = {
 		// 坐标纠错或补标
 		$('.coad-result-wrap .poilist > li .coad-data-oper a.dw').click(function() {
 			var $li = $(this).closest('li');
+			if ($li.hasClass('draggabled')) {
+				return;
+			}
 			$li.addClass('draggabled');
 			var index = $li.index();
 			var currentMarker = that.vectorLayer.getLayers()[index];
@@ -697,31 +797,50 @@ G.Geocoding = {
 			currentMarker.on('dragend', function(e) {
 				var latlng = e.target.getLatLng();
 				
-				// 显示新坐标
-				$li.removeClass('draggabled');
-				$li.removeClass('nomatch');
+//				// 显示新坐标
+//				$li.removeClass('draggabled');
+//				$li.removeClass('nomatch');
+//				var lngStr = latlng.lng.toString();
+//				var latStr = latlng.lat.toString();
+//				$li.find('.span-lng').text(lngStr.substring(0, lngStr.indexOf('.') + 9));
+//				$li.find('.span-lat').text(latStr.substring(0, lngStr.indexOf('.') + 9));
+//				
+//				// pupop
+//				var popupContent = currentPopup.getContent()
+//				var newPopupContent = null;
+//				var mIndex = popupContent.indexOf("<div class='ml'>");
+//				if (mIndex == -1) {
+//					newPopupContent = popupContent;
+//				} else {
+//					newPopupContent = popupContent.substring(0, mIndex) + "</div>";
+//				}
+//				currentPopup.setContent(newPopupContent);
+//				currentMarker.openPopup();					
+//				$('.custom-popup .leaflet-popup-close-button').addClass('finish');
+//				
+//				currentMarker.setIcon(oldIcon);
+//				currentMarker.dragging.disable();
+//				that.map.flyTo(latlng);
+				
+				
 				var lngStr = latlng.lng.toString();
 				var latStr = latlng.lat.toString();
-				$li.find('.span-lng').text(lngStr.substring(0, lngStr.indexOf('.') + 9));
-				$li.find('.span-lat').text(latStr.substring(0, lngStr.indexOf('.') + 9));
-				
-				// pupop
-				var popupContent = currentPopup.getContent()
-				var newPopupContent = null;
-				var mIndex = popupContent.indexOf("<div class='ml'>");
-				if (mIndex == -1) {
-					newPopupContent = popupContent;
-				} else {
-					newPopupContent = popupContent.substring(0, mIndex) + "</div>";
-				}
-				currentPopup.setContent(newPopupContent);
-				currentMarker.openPopup();					
-				$('.custom-popup .leaflet-popup-close-button').addClass('finish');
-				
-				//
-				currentMarker.setIcon(oldIcon);
-				currentMarker.dragging.disable();
-				that.map.flyTo(latlng);
+				var url = G.restUrl + "/geocode/batchUpdate?batchId=" + that.batchId + "&lineNumber=" + $li.attr('type')
+				+ "&resultAddress=&resultLon=" + lngStr.substring(0, lngStr.indexOf('.') + 9)  + "&resultLat=" + latStr.substring(0, lngStr.indexOf('.') + 9);
+				$.ajax({
+						url: url,
+						dataType : "jsonp",
+						jsonp : "callback",
+						success : function(data) {
+							if (data.status == "ok") {
+								var currentPage = $('#data-page-turn span.layui-laypage-curr > em:last-child').text();
+								var batchType = $('.coad-result-wrap .data-radio .types-select a.on').index() + 1;
+								return that.getBatchList(currentPage, batchType);
+							} else {
+								return layer.alert(data.message, {icon: 3});
+							}
+						}
+				});
 			});
 			
 		});
@@ -742,6 +861,24 @@ G.Geocoding = {
 						return layer.alert('请输入地址', {icon: 3});
 					} else {
 						$li.find('h4').html("<a href='#' title='" + value + "'>" + value + "</a>");
+						if (text != value) {
+							var url = G.restUrl + "/geocode/batchUpdate?batchId=" + that.batchId + "&lineNumber=" + $li.attr('type')
+									+ "&resultAddress=" + value + "&resultLon=&resultLat=";
+							$.ajax({
+									url: url,
+									dataType : "jsonp",
+									jsonp : "callback",
+									success : function(data) {
+										if (data.status == "ok") {
+											var currentPage = $('#data-page-turn span.layui-laypage-curr > em:last-child').text();
+											var batchType = $('.coad-result-wrap .data-radio .types-select a.on').index() + 1;
+											return that.getBatchList(currentPage, batchType);
+										} else {
+											return layer.alert(data.message, {icon: 3});
+										}
+									}
+							});
+						}
 					}
 				});
 			}
@@ -749,7 +886,22 @@ G.Geocoding = {
 		
 		// 删除
 		$('.coad-result-wrap .poilist > li .coad-data-oper a.sc').click(function() {
-			
+			var $li = $(this).closest('li');
+			var url = G.restUrl + "/geocode/batchDelete?batchId=" + that.batchId + "&lineNumber=" + $li.attr('type');
+			$.ajax({
+				url: url,
+				dataType : "jsonp",
+				jsonp : "callback",
+				success : function(data) {
+					if (data.status == "ok") {
+						var currentPage = $('#data-page-turn span.layui-laypage-curr > em:last-child').text();
+						var batchType = $('.coad-result-wrap .data-radio .types-select a.on').index() + 1;
+						return that.getBatchList(currentPage, batchType);
+					} else {
+						return layer.alert(data.message, {icon: 3});
+					}
+				}
+			});			
 		});
 		
 		

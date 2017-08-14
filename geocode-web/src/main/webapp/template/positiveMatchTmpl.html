@@ -1,3 +1,4 @@
+<!-- 上传完成后返回字段头、字段值 -->
 <ul>
 	<li>
 		<label>匹配字段</label>
@@ -64,7 +65,7 @@
 		<div class="zd-con">
 			<div class="zd-main" style=" padding: 10px;">
 				<div class="zd-form">
-					<table cellpadding="0" cellspacing="0" style="width: {{columns.length*150}}px;" type="1,4">
+					<table cellpadding="0" cellspacing="0" style="width: {{columns.length*150}}px;" type="1,4,{{pageSum}}">
 
 						<tr>
 							{{each columns as column index}}
