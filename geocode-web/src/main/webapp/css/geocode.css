@@ -134,7 +134,7 @@
 .zd-form table tr td span.on{ background-position: -106px -52px;}
 .data-dis-btn{ height: 32px;  margin-top: 10px; width: 460px;}
 .data-dis-btn a{ float: right; margin-right: 10px; }
-.data-dis-btn button{ color: #fff; width: 100px; height: 30px; line-height: 30px; text-align: center; border-radius: 5px; background: #4e8cf4;}
+.data-dis-btn button{ color: #fff; width: 100px; height: 30px; line-height: 30px; text-align: center; border-radius: 5px; background: #4e8cf4; cursor: pointer;}
 .zd-form table tr:hover{ background: #e5edf7; }
 .zd-form table tr:hover td span{ background-position: -106px -52px; }
 .zd-form table tr.edt{ background: #fff2f2; }
@@ -229,3 +229,5 @@
 .custom-popup .tz-edit .ml{bottom: 20px;}
 .coad-result-wrap > ul.poilist{height: 420px;}
 .popup-close {position: absolute;top: 10px;right: 10px;width: 18px;height: 18px;background: url(../images/sprite.png) no-repeat -177px 0;cursor: pointer;}
+.data-modify-popup .zd-form table tr{height: 40px;}
+.data-modify-popup .keep-con>ul>li input{ height: 30px; width: 100%; border: 1px solid red;}

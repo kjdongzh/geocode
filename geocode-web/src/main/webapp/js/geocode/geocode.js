@@ -71,7 +71,16 @@ G.Geocoding = {
 		
 		// popup关闭按钮
 		$('.popup-close').click(function() {
+			var clas = $(this).parent().attr('class');
 			$(this).parent().hide();
+			$('.translucent-bg').hide();
+			
+			if (clas == 'data-modify-popup') {
+				var currentPage = $('#data-page-turn span.layui-laypage-curr > em:last-child').text();
+				var batchType2 = $('.coad-result-wrap .data-radio .types-select a.on').index() + 1;
+				that.getBatchList(currentPage, batchType2);
+			}
+			
 		});
 		
 		// 正逆向地理编码检索
@@ -211,6 +220,68 @@ G.Geocoding = {
 			that.modify(page, batchType);
 		});
 		
+		// 批量修改中批量删除
+		$('.data-modify-popup .data-dis-btn button').click(function() {
+			var lineNumbers = '';
+			$('.data-modify-popup .keep-con .zd-form table tr > td > span.on').each(function(index) {
+				var line = $(this).closest('tr').attr('type') + ',';
+				lineNumbers += line;
+			});
+			
+			if (lineNumbers.length == 0) {
+				return;
+			} else {
+				var url = G.restUrl + "/geocode/batchDelete?batchId=" + that.batchId + "&lineNumbers=" + lineNumbers;
+				$.ajax({
+					url: url,
+					dataType : "jsonp",
+					jsonp : "callback",
+					success : function(data) {
+						if (data.status == "ok") {
+							var pageAttribute = $('.data-modify-popup .zd-form > table').attr('type');
+							var pageNum = parseInt(pageAttribute.split(',')[0]);
+							var batchType = $('.data-modify-popup .special-types .types-select a.on').index() + 1;
+							that.modify(pageNum, batchType);
+						} else {
+							return layer.alert(data.message, {icon: 3});
+						}
+					}
+				});					
+			}
+			
+		});
+		
+		// 批量修改中重新匹配
+		$('.data-modify-popup > .import-data-btn button').eq(0).click(function() {
+			
+		});
+		
+		// 批量修改中保存修改
+		$('.data-modify-popup > .import-data-btn button').eq(1).click(function() {
+			var modifys = [];
+			$('.data-modify-popup .zd-form > table tr > td.modified').each(function(index) {
+				var line = $(this).closest('tr').attr('type');
+				var index = $(this).index() - 1;
+				var val = $(this).text();
+				modifys.push({
+					"line": parseInt(line),
+					"index": parseInt(index),
+					"value": val
+				});
+			});
+			var url = G.restUrl + "/geocode/batchSourceUpdate?batchId=" + that.batchId;
+			$.ajax({
+				url: url,
+				type: 'POST',
+				data: JSON.stringify(modifys),
+				contentType: 'application/json;charset=utf-8',
+				dataType: 'json',
+		        success: function(){
+		        	return layer.alert("修改成功", {icon: 1});
+		        }
+			});
+		});
+		
 	},
 	
 	// 批量修改
@@ -226,9 +297,33 @@ G.Geocoding = {
 				if (data.status == 'ok') {
 					G.Template.render("batchSourceListTmpl", data, function(html) {
 						$('.data-modify-popup .zd-form').html(html);
+						$('.translucent-bg').show();
 						$('.data-modify-popup').show();
 						$('.data-modify-popup .zd-form table tr td:nth-child(1) span').on('click', function() {
 							$(this).toggleClass('on');
+						});
+						
+						// 修改
+						$('.data-modify-popup .zd-form table tr > td:not(:first-child)').click(function() {
+							var $td = $(this);
+							var text = $td.text();
+							if (!text) {
+								return;
+							}
+							var $html = $("<input type='text' value='" + text + "' />");
+							$td.html($html);
+							$html.focus();
+							$html.blur(function() {
+								var value = $(this).val();
+								if (!value) {
+									return layer.alert('请输入信息', {icon: 3});
+								} else {
+									$td.html(value);
+									if (text != value) {
+										$td.addClass('modified');
+									}
+								}
+							});
 						});
 					})
 				} else {
@@ -887,7 +982,7 @@ G.Geocoding = {
 		// 删除
 		$('.coad-result-wrap .poilist > li .coad-data-oper a.sc').click(function() {
 			var $li = $(this).closest('li');
-			var url = G.restUrl + "/geocode/batchDelete?batchId=" + that.batchId + "&lineNumber=" + $li.attr('type');
+			var url = G.restUrl + "/geocode/batchDelete?batchId=" + that.batchId + "&lineNumbers=" + $li.attr('type');
 			$.ajax({
 				url: url,
 				dataType : "jsonp",
