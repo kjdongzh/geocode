@@ -136,6 +136,28 @@
 			<button>保存修改</button>
 		</div>
 	</div>
+	
+	<!--保存-->
+	<div class="keep-field-popup">
+		<h2>保存</h2>
+		<div class="keep-con">
+			<ul>
+				<li class="special-types">
+					<label>保存方式</label>
+					<div class="types-select server-types">
+						<a href="#" class="on" style="padding-left: 0;" type="1"><i></i>EXCEL</a>
+						<a href="#" type="2"><i></i>TXT</a>
+						<a href="#" type="3"><i></i>CSV</a>
+						<a href="#" type="4"><i></i>SHP</a>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div class="import-data-btn">
+			<button>确定</button>
+			<button>取消</button>
+		</div>
+	</div>
 
 	<div id="map"></div>
 	

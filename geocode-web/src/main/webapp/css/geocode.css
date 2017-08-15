@@ -66,7 +66,7 @@
 
 /*正向批量添加文件*/
 
-.add-field-popup,.keep-field-popup,.data-match-popup,.data-modify-popup{ z-index: 3000;position: absolute; top: 50%; left: 50%; width: 600px; height: 320px; margin-top: -160px; margin-left: -300px; background: #fff; border-radius: 5px; box-shadow: 2px 2px 3px rgba(0,0,0,0.1); padding: 0 10px; display: none;}
+.add-field-popup,.keep-field-popup,.data-match-popup,.data-modify-popup{ z-index: 3000;position: absolute; top: 50%; left: 55%; width: 600px; height: 320px; margin-top: -160px; margin-left: -300px; background: #fff; border-radius: 5px; box-shadow: 2px 2px 3px rgba(0,0,0,0.1); padding: 0 10px; display: none;}
 .add-field-popup h2,.keep-field-popup h2,.data-match-popup h2,.data-modify-popup h2{ color: #999; height: 57px; line-height: 57px; border-bottom: 1px solid #ccc; margin:0 20px; font-size: 16px; font-weight: normal; margin-bottom: 20px;}
 .upload-btn{ float: right; position: relative; margin-right: 20px; width: 100px; height: 40px;}
 .upload-btn span{ color: #fff; display: inline-block; width: 100px; height: 40px; line-height: 40px; text-align: center; font-size: 16px; border-radius: 5px; background: #4e8cf4; position: absolute; top: 0; left: 0;}
@@ -231,3 +231,4 @@
 .popup-close {position: absolute;top: 10px;right: 10px;width: 18px;height: 18px;background: url(../images/sprite.png) no-repeat -177px 0;cursor: pointer;}
 .data-modify-popup .zd-form table tr{height: 40px;}
 .data-modify-popup .keep-con>ul>li input{ height: 30px; width: 100%; border: 1px solid red;}
+.keep-field-popup {height: 200px;}

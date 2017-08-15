@@ -105,8 +105,20 @@ G.Geocoding = {
 		
 		// 上传批量匹配txt,csv,excel
 		$('.coadtall-bar .batch').click(function(){
+			that.hideAllPopup();
 			$('.translucent-bg').show();
 			$('.add-field-popup').show();
+		});
+		
+		// 保存
+		$('.coadtall-bar .save').click(function(){
+			if (that.batchId) {
+				that.hideAllPopup();
+				$('.translucent-bg').show();
+				$('.keep-field-popup').show();
+			} else {
+				return layer.alert('请先上传批量匹配文件', {icon: 3});
+			}
 		});
 		
 		// 选择编码操作类别
@@ -253,6 +265,22 @@ G.Geocoding = {
 		
 		// 批量修改中重新匹配
 		$('.data-modify-popup > .import-data-btn button').eq(0).click(function() {
+			var url = G.restUrl + "/geocode/rebatch?batchId=" + that.batchId;
+			var index = layer.load();
+			
+			$.ajax({
+				url: url,
+				type: 'GET',
+				dataType : "jsonp",
+				jsonp : "callback",
+		        success: function() {
+		        	layer.close(index);
+		        	return layer.alert("重新匹配成功", {icon: 1});
+		        },
+		        error: function() {
+		        	return layer.close(index);
+		        }
+			});
 			
 		});
 		
@@ -269,6 +297,9 @@ G.Geocoding = {
 					"value": val
 				});
 			});
+			if (modifys.length == 0) {
+				return;
+			}
 			var url = G.restUrl + "/geocode/batchSourceUpdate?batchId=" + that.batchId;
 			$.ajax({
 				url: url,
@@ -282,6 +313,20 @@ G.Geocoding = {
 			});
 		});
 		
+		// 确定保存
+		$('.keep-field-popup > .import-data-btn > button').eq(0).click(function() {
+			var saveType = $('.keep-field-popup .types-select > a.on').attr('type');
+		});
+		
+		// 取消保存
+		$('.keep-field-popup > .import-data-btn > button').eq(1).click(function() {
+			$('.keep-field-popup').hide();
+			$('.translucent-bg').hide();
+		});	
+		
+		$('.keep-field-popup .types-select > a').click(function() {
+			$(this).addClass('on').siblings().removeClass('on');
+		});
 	},
 	
 	// 批量修改
@@ -1009,6 +1054,14 @@ G.Geocoding = {
 		var newSouthWest = L.latLng(southWest.lat, southWest.lng-(northEast.lng-southWest.lng)/2);
 		var newBounds = L.latLngBounds(northEast, newSouthWest);
 		return newBounds;
+	},
+	
+	hideAllPopup : function() {
+		$('.translucent-bg').hide();
+		$('.add-field-popup').hide();
+		$('.data-match-popup').hide();
+		$('.data-modify-popup').hide();
+		$('.keep-field-popup').hide();
 	},
 
 
