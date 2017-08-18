@@ -35,8 +35,8 @@ G.Geocoding = {
 		        }
 		    });
 		});
-		this.batchId = 'e562f86001a847d6a5bff96a822a340f_P';
-		this.popupFields = [['省份', 'resultProvince'],['城市', 'resultCity'],['乡镇', 'resultCounty']];
+		this.batchId = '1eff8ec4be9a459da216f9e71ca826f9_P';
+		this.popupFields = [['省份', 'resultProvince'],['城市', 'resultCity'],['区县', 'resultCounty'],['乡镇', 'resultTown']];
 		this.getBatchList(1);
 	},
 	
@@ -316,6 +316,8 @@ G.Geocoding = {
 		// 确定保存
 		$('.keep-field-popup > .import-data-btn > button').eq(0).click(function() {
 			var saveType = $('.keep-field-popup .types-select > a.on').attr('type');
+			that.hideAllPopup();
+			window.location = G.restUrl + "/geocode/batchSave?batchId=" + that.batchId + "&saveType=" + saveType;
 		});
 		
 		// 取消保存
@@ -397,6 +399,7 @@ G.Geocoding = {
 			formData.append("latIndex", latIndex);
 		}
 		
+		var loadingIndex = layer.load();
 		$.ajax({
 			url : url,
 			type : 'POST',
@@ -405,16 +408,23 @@ G.Geocoding = {
 			processData: false,
 		    contentType: false,
 			success : function(data) {
+				layer.close(loadingIndex);
 				if (data.status == "ok") {
 					that.batchId = data.batchId;
 					G.Template.render("batchListTmpl", data.batchList, function(html) {
 						$('.coad-result-wrap .poilist').children().remove();
 						$('.coad-result-wrap .poilist').append(html);
-						$('.data-match-popup').hide();
+						//$('.data-match-popup').hide();
+						that.hideAllPopup();
+						$('#data-page-turn').show();
+						$('.coad-result-wrap .turn-page').show();
+						$('.coad-result-wrap .data-radio').show();
+						$('.coad-result-wrap').show();
 						// 分页
 						layui.laypage({
 						    cont: 'data-page-turn',
 					        pages: data.batchList.pageSum,
+					        curr: data.batchList.pageNum,
 					        first: false,
 					        last: false,
 					        groups: 4,
@@ -422,19 +432,19 @@ G.Geocoding = {
 					        next: '<em>></em>',
 					        skin: '#1E9FFF',
 					        jump: function(obj, first){
-					            var curr = obj.curr;
-					            that.getBatchList(curr);
+					        	if (!first) {
+					        		var curr = obj.curr;
+					        		var type = $('.coad-result-wrap .data-radio .types-select a.on').index() + 1;
+					        		that.getBatchList(curr, type);
+					        	}
 					        }
 					    });
-						
-						$('.coad-result-wrap .turn-page').show();
-						$('.coad-result-wrap .data-radio').show();
-						$('.coad-result-wrap').show();
 						
 						that.vectorLayer.clearLayers();
 						
 						var list = data.batchList.results;
-						var failLon, failLat;
+						var failLon = 112.241865807;
+						var failLat = 30.332590523;
 						var allFailed = true;
 						for (var i = 0; i < list.length; i++) {
 							if (list[i].status == 'success') {
@@ -444,33 +454,51 @@ G.Geocoding = {
 								break;
 							}
 						}
-						
-						if (allFailed) {
-							return;
-						}
-						
 						for (var i = 0; i < list.length; i++) {
 							var mark = null;
-							if(list[i].status == 'success') {
+							var popupContent = null;
+							if(list[i].status == 'success' || list[i].resultLon.length > 0) {
 								var _icon = L.icon({
 									iconUrl: G.root + '/images/num' + (i + 1) + ".png",
 									iconSize:     [21, 26],
 									iconAnchor:   [10.5, 26]
 								});
 								mark = L.marker([list[i].resultLat, list[i].resultLon], {icon: _icon});
+								
+								if(list[i].status == 'success') {
+									popupContent = "<div class='tz-edit'><h3>数据名称</h3>";
+									for(var j = 0; j < that.popupFields.length; j++) {
+										popupContent = popupContent + "<p>" + that.popupFields[j][0] + ":  " + list[i][that.popupFields[j][1]]+"</p>";
+									}
+									popupContent += "</div>";
+								} else {
+									popupContent = "<div class='tz-edit'><h3>数据名称</h3></div>";
+								}
 							} else {
 								var _icon = L.icon({
 									iconUrl: G.root + '/images/num0.png',
-									iconSize:     [21, 26],
+									iconSize:     [1, 1],
 									iconAnchor:   [10.5, 26]
 								});
 								mark = L.marker([failLat, failLon], {icon: _icon});
+								popupContent = "<div class='tz-edit'><h3>数据名称</h3></div>";
 							}
+							
+							mark.bindPopup(popupContent, {className: 'custom-popup'});
+							mark.on('popupopen', function() {
+								$('.custom-popup .leaflet-popup-close-button').addClass('close');
+							});
 							that.vectorLayer.addLayer(mark);
 						}
 						
-						var bounds = that.vectorLayer.getBounds();
-						that.map.fitBounds(bounds);
+						var bounds = null;
+						if (allFailed) {
+							bounds = L.latLngBounds(L.latLng(27.2161, 118), L.latLng(31.5203, 123));
+						} else {
+							bounds = that.vectorLayer.getBounds();
+						}
+						that.map.fitBounds(that.modifyBound(bounds));
+						that.bindMapEvents();
 					});
 				} else {
 					return layer.alert(data.message, {icon: 2});
@@ -495,18 +523,38 @@ G.Geocoding = {
 						G.Template.render("resultTmpl", data, function(html) {
 							$('.coad-result-wrap .poilist').children().remove();
 							$('.coad-result-wrap .poilist').append(html);
-							//$('.coad-result-wrap').css('height', 'auto');
+							$('.coad-result-wrap .turn-page').hide();
+							$('.coad-result-wrap .data-radio').hide();
+							$('#data-page-turn').hide();
 							$('.coad-result-wrap').show();
+							that.hideAllPopup();
 							
 							// 单一匹配无纠错，所以绘制形状
-							var featureLayer = omnivore.wkt.parse(result.wkt);
-							that.vectorLayer.addLayer(featureLayer);
-							var bounds = that.vectorLayer.getBounds();
-							that.map.fitBounds(bounds);
-							//that.bindUI(data.pageNum, data.pageSum);
+							
+							that.vectorLayer.clearLayers();
+							var _icon = L.icon({
+								iconUrl: G.root + '/images/num1.png',
+								iconSize:     [21, 26],
+								iconAnchor:   [10.5, 26]
+							});
+							var mark = L.marker([result.location.lat, result.location.lon], {icon: _icon});
+							
+							var popupContent = "<div class='tz-edit'><h3>数据名称</h3><p>省份:  " + result.province + "</p>"
+											+ "<p>城市:  " + result.city + "</p>"
+											+ "<p>区县:  " + result.county + "</p>"
+											+ "<p>乡镇:  " + result.town + "</p>"
+											+ "<p>地址:  " + result.address + "</p>"
+											+ "</div>";
+							mark.bindPopup(popupContent, {className: 'custom-popup'}).openPopup();
+							mark.on('popupopen', function() {
+								$('.custom-popup .leaflet-popup-close-button').addClass('close');
+							});
+							that.vectorLayer.addLayer(mark);							
+							that.map.flyTo(L.latLng(result.location.lat, result.location.lon));
+							
 						});
 					} else {
-						
+						return layer.alert("未查到匹配内容", {icon: 2});
 					}
 				} else {
 					return layer.alert(data.message, {icon: 2});
@@ -685,7 +733,7 @@ G.Geocoding = {
 				if (data.status == "ok") {
 					G.Template.render("uploadListTmpl", data, function(html) {
 						var pageSum = $('.data-match-popup .zd-form table').attr('type').split(',')[2];
-						$('.data-match-popup .zd-form table').attr('type', data.pageNum + ',' + data.pageSize + pageSum);
+						$('.data-match-popup .zd-form table').attr('type', data.pageNum + ',' + data.pageSize + ',' + pageSum);
 						$('.data-match-popup .zd-form table tr').each(function(index) {
 							if (index != 0 ) {
 								$(this).remove();
@@ -716,7 +764,9 @@ G.Geocoding = {
 				G.Template.render("batchListTmpl", data, function(html) {
 					$('.coad-result-wrap .poilist').children().remove();
 					$('.coad-result-wrap .poilist').append(html);
-					$('.data-match-popup').hide();
+					//$('.data-match-popup').hide();
+					that.hideAllPopup();
+					$('#data-page-turn').show();
 					$('.coad-result-wrap .turn-page').show();
 					$('.coad-result-wrap .data-radio').show();
 					$('.coad-result-wrap').show();
@@ -744,7 +794,8 @@ G.Geocoding = {
 					
 					var list = data.results;
 					
-					var failLon, failLat;
+					var failLon = 112.241865807;
+					var failLat = 30.332590523;
 					var allFailed = true;
 					for (var i = 0; i < list.length; i++) {
 						if (list[i].status == 'success') {
@@ -755,16 +806,10 @@ G.Geocoding = {
 						}
 					}
 					
-					if (allFailed) {
-						//return;
-						failLon = 0;
-						failLat = 0;
-					}
-					
 					for (var i = 0; i < list.length; i++) {
 						var mark = null;
 						var popupContent = null;
-						if(list[i].status == 'success') {
+						if(list[i].status == 'success' || list[i].resultLon.length > 0) {
 							var _icon = L.icon({
 								iconUrl: G.root + '/images/num' + (i + 1) + ".png",
 								iconSize:     [21, 26],
@@ -772,15 +817,19 @@ G.Geocoding = {
 							});
 							mark = L.marker([list[i].resultLat, list[i].resultLon], {icon: _icon});
 							
-							popupContent = "<div class='tz-edit'><h3>数据名称</h3>";
-							for(var j = 0; j < that.popupFields.length; j++) {
-								popupContent = popupContent + "<p>" + that.popupFields[j][0] + ":  " + list[i][that.popupFields[j][1]]+"</p>";
-							}
-//							popupContent += "<div class='ml'><ul>" +
+							if(list[i].status == 'success') {
+								popupContent = "<div class='tz-edit'><h3>数据名称</h3>";
+								for(var j = 0; j < that.popupFields.length; j++) {
+									popupContent = popupContent + "<p>" + that.popupFields[j][0] + ":  " + list[i][that.popupFields[j][1]]+"</p>";
+								}
+//									popupContent += "<div class='ml'><ul>" +
 //									"<li>经度<span>116° 23′ 17〃E</span></li>" +
 //									"<li style='padding-left: 35px;'>纬度<br><span>39° 54′ 27〃N</span></li>" +
 //									"</ul></div>";
-							popupContent += "</div>";
+								popupContent += "</div>";
+							} else {
+								popupContent = "<div class='tz-edit'><h3>数据名称</h3></div>";
+							}
 						} else {
 							var _icon = L.icon({
 								iconUrl: G.root + '/images/num0.png',
@@ -798,7 +847,13 @@ G.Geocoding = {
 						that.vectorLayer.addLayer(mark);
 					}
 					
-					var bounds = that.vectorLayer.getBounds();
+					
+					var bounds = null;
+					if (allFailed) {
+						bounds = L.latLngBounds(L.latLng(27.2161, 118), L.latLng(31.5203, 123));
+					} else {
+						bounds = that.vectorLayer.getBounds();
+					}
 					that.map.fitBounds(that.modifyBound(bounds));
 					that.bindMapEvents();
 				});
@@ -842,7 +897,8 @@ G.Geocoding = {
 		// 点击左侧面板
 		$('.coad-result-wrap .poilist>li .ml>h4>a').click(function() {
 			var $li = $(this).closest('li');
-			if ($li.hasClass('nomatch')) {
+			var lonAttr = $li.find('.span-lng').text();
+			if ($li.hasClass('nomatch') && lonAttr.length == 0) {
 				return;
 			} else {
 				var index = $li.index();
@@ -897,7 +953,8 @@ G.Geocoding = {
 			var currentMarker = that.vectorLayer.getLayers()[index];
 			var currentPopup = currentMarker.getPopup();
 			
-			if ($li.hasClass('nomatch')) {
+			var lonAttr = $li.find('.span-lng').text();
+			if ($li.hasClass('nomatch') && lonAttr.length == 0) {
 				currentMarker.setLatLng(that.map.getBounds().getNorthWest());
 				that.map.flyTo(currentMarker.getLatLng());
 			} else {
@@ -1027,21 +1084,41 @@ G.Geocoding = {
 		// 删除
 		$('.coad-result-wrap .poilist > li .coad-data-oper a.sc').click(function() {
 			var $li = $(this).closest('li');
-			var url = G.restUrl + "/geocode/batchDelete?batchId=" + that.batchId + "&lineNumbers=" + $li.attr('type');
-			$.ajax({
-				url: url,
-				dataType : "jsonp",
-				jsonp : "callback",
-				success : function(data) {
-					if (data.status == "ok") {
-						var currentPage = $('#data-page-turn span.layui-laypage-curr > em:last-child').text();
-						var batchType = $('.coad-result-wrap .data-radio .types-select a.on').index() + 1;
-						return that.getBatchList(currentPage, batchType);
-					} else {
-						return layer.alert(data.message, {icon: 3});
-					}
-				}
-			});			
+			 var isDelete = false;
+			 layer.msg('确定删除！', {
+			      icon: 6,
+			      btn: ['是','否','取消'],
+			      yes: function(index){
+			    	  isDelete = true;
+			    	  layer.close(index);
+			      },
+			      btn2: function(index){
+			    	  isDelete = false;
+			    	  layer.close(index);
+			      },
+			      end: function(){
+			    	  if (isDelete) {
+			  			var url = G.restUrl + "/geocode/batchDelete?batchId=" + that.batchId + "&lineNumbers=" + $li.attr('type');
+			  			$.ajax({
+			  				url: url,
+			  				dataType : "jsonp",
+			  				jsonp : "callback",
+			  				success : function(data) {
+			  					if (data.status == "ok") {
+			  						var currentPage = $('#data-page-turn span.layui-laypage-curr > em:last-child').text();
+			  						var batchType = $('.coad-result-wrap .data-radio .types-select a.on').index() + 1;
+			  						return that.getBatchList(currentPage, batchType);
+			  					} else {
+			  						return layer.alert(data.message, {icon: 3});
+			  					}
+			  				}
+			  			});	
+			    	  } 
+			      }
+			});
+			
+			
+					
 		});
 		
 		
@@ -1051,8 +1128,9 @@ G.Geocoding = {
 	modifyBound : function(bounds) {
 		var northEast = bounds.getNorthEast();
 		var southWest = bounds.getSouthWest();
-		var newSouthWest = L.latLng(southWest.lat, southWest.lng-(northEast.lng-southWest.lng)/2);
-		var newBounds = L.latLngBounds(northEast, newSouthWest);
+		var newSouthWest = L.latLng(southWest.lat - 0.002, southWest.lng-(northEast.lng-southWest.lng)/2);
+		var newNorthEast = L.latLng(northEast.lat + 0.001, northEast.lng);
+		var newBounds = L.latLngBounds(newNorthEast, newSouthWest);
 		return newBounds;
 	},
 	
