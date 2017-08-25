@@ -1,13 +1,13 @@
 <!-- 批量修改list模板 -->
-<table cellpadding="0" cellspacing="0" style="width: {{column.length*250}}px;" type="{{pageNum}},{{pageSum}},{{pageSize}}">
+<table cellpadding="0" cellspacing="0" style="width: {{column.length*250}}px;table-layout: fixed;" type="{{pageNum}},{{pageSum}},{{pageSize}}">
 	
 		<tr>
 			<th style="width: 40px;"></th>
 			{{each column as col index}}
 				{{if (index+1) == column.length}}
-					<th class="last">{{col}}</th>
+					<th style="max-width: 20%;" class="last">{{col}}</th>
 				{{else}}
-					<th>{{col}}</th>
+					<th style="max-width: 20%;">{{col}}</th>
 				{{/if}}
 			{{/each}}
 		</tr>

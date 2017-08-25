@@ -11,7 +11,8 @@
 <link href="${pageContext.request.contextPath}/css/layui-page.css" rel="stylesheet" />
 <link href="${pageContext.request.contextPath}/css/reset.css" rel="stylesheet" />
 <link href="${pageContext.request.contextPath}/css/geocode.css" rel="stylesheet" />
-<link href="${pageContext.request.contextPath}/js/lib/leafletsdk/css/mc-all.css" rel="stylesheet" />
+<link href="${pageContext.request.contextPath}/js/lib/geogis/css/leaflet.css" rel="stylesheet" />
+<link href="${pageContext.request.contextPath}/js/lib/geogis/css/sdk.css" rel="stylesheet" />
 </head>
 <body>
 
@@ -86,7 +87,7 @@
 			</ul>
 		</div>
 		<div class="import-data-btn">
-			<button>确定</button>
+			<button>下一步</button>
 			<button>取消</button>
 		</div>
 	</div>
@@ -163,9 +164,11 @@
 	
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/lib/jquery-1.10.2.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/lib/jquery.form.js"></script>
-	<script type="text/javascript" src="${pageContext.request.contextPath}/js/lib/leafletsdk/geoway.all.min.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/lib/geogis/js/leaflet-src.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/lib/geogis/js/geogis.min.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/lib/layer.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/lib/layui.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/lib/colResizable-1.5.min.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/lib/template.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/geocode/config.js"></script>
 	<script type="text/javascript">

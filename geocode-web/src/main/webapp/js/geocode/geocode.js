@@ -350,13 +350,19 @@ G.Geocoding = {
 							$(this).toggleClass('on');
 						});
 						
+						$(".data-modify-popup .zd-form table").colResizable({
+							liveDrag:true, 
+							gripInnerHtml:"<div class='grip'></div>", 
+							draggingClass:"dragging", 
+							onResize:function(){}
+						});
 						// 修改
 						$('.data-modify-popup .zd-form table tr > td:not(:first-child)').click(function() {
 							var $td = $(this);
 							var text = $td.text();
-							if (!text) {
-								return;
-							}
+//							if (!text) {
+//								return;
+//							}
 							var $html = $("<input type='text' value='" + text + "' />");
 							$td.html($html);
 							$html.focus();
@@ -868,7 +874,9 @@ G.Geocoding = {
 		// 鼠标滑过左侧面板，图标变换
 		$('.coad-result-wrap .poilist>li').hover(
 			function() {
-				if ($(this).hasClass('nomatch')) {
+				var $li = $(this).closest('li');
+				var lonAttr = $li.find('.span-lng').text();
+				if ($(this).hasClass('nomatch') && lonAttr.length == 0) {
 					return;
 				} else {
 					var index = $(this).index();
@@ -880,7 +888,9 @@ G.Geocoding = {
 					that.vectorLayer.getLayers()[index].setIcon(newIcon);
 				}
 			}, function() {
-				if ($(this).hasClass('nomatch') || $(this).hasClass('draggabled')) {
+				var $li = $(this).closest('li');
+				var lonAttr = $li.find('.span-lng').text();
+				if (lonAttr.length == 0 || $(this).hasClass('draggabled')) {
 					return;
 				} else {
 					var index = $(this).index();
@@ -944,10 +954,12 @@ G.Geocoding = {
 //		tipPopup._sort = "tip-popup";
 		// 坐标纠错或补标
 		$('.coad-result-wrap .poilist > li .coad-data-oper a.dw').click(function() {
+			$(this).css('background-position', '-18px -180px');
 			var $li = $(this).closest('li');
 			if ($li.hasClass('draggabled')) {
 				return;
 			}
+			
 			$li.addClass('draggabled');
 			var index = $li.index();
 			var currentMarker = that.vectorLayer.getLayers()[index];
@@ -972,8 +984,15 @@ G.Geocoding = {
 				iconAnchor:   [10.5, 26]
 			});
 			currentMarker.setIcon(newIcon);
+			
+			currentMarker.bindTooltip("拖动鼠标修改坐标").openTooltip();
+			currentMarker.on('click', function (e) {
+				e.target.closeTooltip();
+		    });
+			
 			currentMarker.dragging.enable();
-			currentMarker.on('drag', function(e) { 
+			currentMarker.on('drag', function(e) {
+				e.target.closeTooltip();
 				var popupContent = currentPopup.getContent()
 				
 				var latlng = e.target.getLatLng();
@@ -994,32 +1013,50 @@ G.Geocoding = {
 			currentMarker.on('dragend', function(e) {
 				var latlng = e.target.getLatLng();
 				
-//				// 显示新坐标
-//				$li.removeClass('draggabled');
-//				$li.removeClass('nomatch');
+				// 修改左侧面板坐标
+				var lngStr = latlng.lng.toString();
+				var latStr = latlng.lat.toString();
+				$li.find('.span-lng').text(lngStr.substring(0, lngStr.indexOf('.') + 9));
+				$li.find('.span-lat').text(latStr.substring(0, lngStr.indexOf('.') + 9));
+				
+				// 修改popup
+				var popupContent = currentPopup.getContent()
+				var newPopupContent = null;
+				var mIndex = popupContent.indexOf("<div class='ml'>");
+				if (mIndex == -1) {
+					newPopupContent = popupContent;
+				} else {
+					newPopupContent = popupContent.substring(0, mIndex) + "</div>";
+				}
+				currentPopup.setContent(newPopupContent);
+				currentMarker.openPopup();					
+				$('.custom-popup .leaflet-popup-close-button').addClass('finish');
+				that.map.flyTo(latlng);
+				
+				// 修改服务端坐标，刷新页面
 //				var lngStr = latlng.lng.toString();
 //				var latStr = latlng.lat.toString();
-//				$li.find('.span-lng').text(lngStr.substring(0, lngStr.indexOf('.') + 9));
-//				$li.find('.span-lat').text(latStr.substring(0, lngStr.indexOf('.') + 9));
-//				
-//				// pupop
-//				var popupContent = currentPopup.getContent()
-//				var newPopupContent = null;
-//				var mIndex = popupContent.indexOf("<div class='ml'>");
-//				if (mIndex == -1) {
-//					newPopupContent = popupContent;
-//				} else {
-//					newPopupContent = popupContent.substring(0, mIndex) + "</div>";
-//				}
-//				currentPopup.setContent(newPopupContent);
-//				currentMarker.openPopup();					
-//				$('.custom-popup .leaflet-popup-close-button').addClass('finish');
-//				
-//				currentMarker.setIcon(oldIcon);
-//				currentMarker.dragging.disable();
-//				that.map.flyTo(latlng);
-				
-				
+//				var url = G.restUrl + "/geocode/batchUpdate?batchId=" + that.batchId + "&lineNumber=" + $li.attr('type')
+//				+ "&resultAddress=&resultLon=" + lngStr.substring(0, lngStr.indexOf('.') + 9)  + "&resultLat=" + latStr.substring(0, lngStr.indexOf('.') + 9);
+//				$.ajax({
+//						url: url,
+//						dataType : "jsonp",
+//						jsonp : "callback",
+//						success : function(data) {
+//							if (data.status == "ok") {
+//								var currentPage = $('#data-page-turn span.layui-laypage-curr > em:last-child').text();
+//								var batchType = $('.coad-result-wrap .data-radio .types-select a.on').index() + 1;
+//								return that.getBatchList(currentPage, batchType);
+//							} else {
+//								return layer.alert(data.message, {icon: 3});
+//							}
+//						}
+//				});
+			});
+			
+			// 右键事件 结束拖动
+			currentMarker.on('contextmenu', function(e) {
+				var latlng = e.target.getLatLng();
 				var lngStr = latlng.lng.toString();
 				var latStr = latlng.lat.toString();
 				var url = G.restUrl + "/geocode/batchUpdate?batchId=" + that.batchId + "&lineNumber=" + $li.attr('type')

@@ -85,9 +85,9 @@
 .coad-data-oper a.bj{ background-position: 0 -162px;}
 .coad-data-oper a.dw{ background-position: -18px -162px;}
 .coad-data-oper a.sc{ background-position: -36px -162px;}
-.poilist>li:hover .coad-data-oper a.bj{ background-position: 0 -180px;}
-.poilist>li:hover .coad-data-oper a.dw{ background-position: -18px -180px;}
-.poilist>li:hover .coad-data-oper a.sc{ background-position: -36px -180px;}
+.coad-data-oper a.bj:hover{ background-position: 0 -180px;}
+.coad-data-oper a.dw:hover{ background-position: -18px -180px;}
+.coad-data-oper a.sc:hover{ background-position: -36px -180px;} 
 .poilist>li.nomatch{ background: #fff2f2;}
 .data-radio{ overflow: hidden; padding: 0 10px; display: none;}
 .data-radio .types-select{ float: left; margin-left: 0;}
