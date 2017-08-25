@@ -36,7 +36,7 @@ G.Geocoding = {
 		    });
 		});
 		this.batchId = '1eff8ec4be9a459da216f9e71ca826f9_P';
-		this.popupFields = [['省份', 'resultProvince'],['城市', 'resultCity'],['区县', 'resultCounty'],['乡镇', 'resultTown']];
+		this.popupFields = [['位置坐标(GEO)', '0'],['名称(NAME)', '1'],['简称(JC)', '2'],['所在设区市(SZS)', '3']];
 		this.getBatchList(1);
 	},
 	

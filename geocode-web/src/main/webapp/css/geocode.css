@@ -224,7 +224,7 @@
 .custom-popup .leaflet-popup-content-wrapper {margin-bottom: 20px;border-radius: 5px;}
 .custom-popup .leaflet-popup-content{min-width: 260px;margin-right: 25px;min-height: 100px;}
 .custom-popup .leaflet-popup-content h3 {color: #333;height: 30px;line-height: 30px;font-size: 16px;font-weight: normal;}
-.custom-popup .leaflet-popup-content p {color: #999;line-height: 30px;font-size: 14px; margin:0; word-wrap: break-word; word-break: normal;}
+.custom-popup .leaflet-popup-content p {color: #999;line-height: 30px;font-size: 14px; margin:0; word-wrap: break-word; word-break: normal;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 20em;}
 .custom-popup .leaflet-popup-tip-container{bottom: 0px;}
 .custom-popup .tz-edit .ml{bottom: 20px;}
 .coad-result-wrap > ul.poilist{height: 420px;}
