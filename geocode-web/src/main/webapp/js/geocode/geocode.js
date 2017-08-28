@@ -471,15 +471,6 @@ G.Geocoding = {
 								});
 								mark = L.marker([list[i].resultLat, list[i].resultLon], {icon: _icon});
 								
-								if(list[i].status == 'success') {
-									popupContent = "<div class='tz-edit'><h3>数据名称</h3>";
-									for(var j = 0; j < that.popupFields.length; j++) {
-										popupContent = popupContent + "<p>" + that.popupFields[j][0] + ":  " + list[i][that.popupFields[j][1]]+"</p>";
-									}
-									popupContent += "</div>";
-								} else {
-									popupContent = "<div class='tz-edit'><h3>数据名称</h3></div>";
-								}
 							} else {
 								var _icon = L.icon({
 									iconUrl: G.root + '/images/num0.png',
@@ -487,9 +478,12 @@ G.Geocoding = {
 									iconAnchor:   [10.5, 26]
 								});
 								mark = L.marker([failLat, failLon], {icon: _icon});
-								popupContent = "<div class='tz-edit'><h3>数据名称</h3></div>";
 							}
 							
+							popupContent = "<div class='tz-edit'>";
+							for(var j = 0; j < that.popupFields.length; j++) {
+								popupContent = popupContent + "<p>" + that.popupFields[j][0] + ":  " + list[i][that.popupFields[j][1]]+"</p>";
+							}
 							mark.bindPopup(popupContent, {className: 'custom-popup'});
 							mark.on('popupopen', function() {
 								$('.custom-popup .leaflet-popup-close-button').addClass('close');
@@ -822,20 +816,6 @@ G.Geocoding = {
 								iconAnchor:   [10.5, 26]
 							});
 							mark = L.marker([list[i].resultLat, list[i].resultLon], {icon: _icon});
-							
-							if(list[i].status == 'success') {
-								popupContent = "<div class='tz-edit'><h3>数据名称</h3>";
-								for(var j = 0; j < that.popupFields.length; j++) {
-									popupContent = popupContent + "<p>" + that.popupFields[j][0] + ":  " + list[i][that.popupFields[j][1]]+"</p>";
-								}
-//									popupContent += "<div class='ml'><ul>" +
-//									"<li>经度<span>116° 23′ 17〃E</span></li>" +
-//									"<li style='padding-left: 35px;'>纬度<br><span>39° 54′ 27〃N</span></li>" +
-//									"</ul></div>";
-								popupContent += "</div>";
-							} else {
-								popupContent = "<div class='tz-edit'><h3>数据名称</h3></div>";
-							}
 						} else {
 							var _icon = L.icon({
 								iconUrl: G.root + '/images/num0.png',
@@ -843,9 +823,13 @@ G.Geocoding = {
 								iconAnchor:   [10.5, 26]
 							});
 							mark = L.marker([failLat, failLon], {icon: _icon});
-							popupContent = "<div class='tz-edit'><h3>数据名称</h3></div>";
 						}
 						
+						popupContent = "<div class='tz-edit'>";
+						for(var j = 0; j < that.popupFields.length; j++) {
+							popupContent = popupContent + "<p>" + that.popupFields[j][0] + ":  " + list[i][that.popupFields[j][1]]+"</p>";
+						}
+						popupContent += "</div>";
 						mark.bindPopup(popupContent, {className: 'custom-popup'});
 						mark.on('popupopen', function() {
 							$('.custom-popup .leaflet-popup-close-button').addClass('close');
@@ -872,45 +856,47 @@ G.Geocoding = {
 		var that = this;
 		
 		// 鼠标滑过左侧面板，图标变换
-		$('.coad-result-wrap .poilist>li').hover(
-			function() {
-				var $li = $(this).closest('li');
-				var lonAttr = $li.find('.span-lng').text();
-				if ($(this).hasClass('nomatch') && lonAttr.length == 0) {
-					return;
-				} else {
-					var index = $(this).index();
-					var newIcon = L.icon({
-						iconUrl: G.root + '/images/num' + (index + 1) + "b.png",
-						iconSize:     [21, 26],
-						iconAnchor:   [10.5, 26]
-					});
-					that.vectorLayer.getLayers()[index].setIcon(newIcon);
-				}
-			}, function() {
-				var $li = $(this).closest('li');
-				var lonAttr = $li.find('.span-lng').text();
-				if (lonAttr.length == 0 || $(this).hasClass('draggabled')) {
-					return;
-				} else {
-					var index = $(this).index();
-					var newIcon = L.icon({
-						iconUrl: G.root + '/images/num' + (index + 1) + ".png",
-						iconSize:     [21, 26],
-						iconAnchor:   [10.5, 26]
-					});
-					that.vectorLayer.getLayers()[index].setIcon(newIcon);
-				}
-			}
-		); 
+//		$('.coad-result-wrap .poilist>li').hover(
+//			function() {
+//				var $li = $(this).closest('li');
+//				var lonAttr = $li.find('.span-lng').text();
+//				if ($(this).hasClass('nomatch') && lonAttr.length == 0) {
+//					return;
+//				} else {
+//					var index = $(this).index();
+//					var newIcon = L.icon({
+//						iconUrl: G.root + '/images/num' + (index + 1) + "b.png",
+//						iconSize:     [21, 26],
+//						iconAnchor:   [10.5, 26]
+//					});
+//					that.vectorLayer.getLayers()[index].setIcon(newIcon);
+//				}
+//			}, function() {
+//				var $li = $(this).closest('li');
+//				var lonAttr = $li.find('.span-lng').text();
+//				if (lonAttr.length == 0 || $(this).hasClass('draggabled')) {
+//					return;
+//				} else {
+//					var index = $(this).index();
+//					var newIcon = L.icon({
+//						iconUrl: G.root + '/images/num' + (index + 1) + ".png",
+//						iconSize:     [21, 26],
+//						iconAnchor:   [10.5, 26]
+//					});
+//					that.vectorLayer.getLayers()[index].setIcon(newIcon);
+//				}
+//			}
+//		); 
+		
 		
 		// 点击左侧面板
-		$('.coad-result-wrap .poilist>li .ml>h4>a').click(function() {
-			var $li = $(this).closest('li');
+		$('.coad-result-wrap .poilist>li').click(function() {
+			var $li = $(this);
 			var lonAttr = $li.find('.span-lng').text();
 			if ($li.hasClass('nomatch') && lonAttr.length == 0) {
 				return;
 			} else {
+				$li.addClass('selected').siblings().removeClass('selected');
 				var index = $li.index();
 				var newIcon = L.icon({
 					iconUrl: G.root + '/images/num' + (index + 1) + "b.png",
@@ -949,11 +935,9 @@ G.Geocoding = {
 			}
 		});
 		
-//		var tipPopup = new L.TipPopup({offset : new L.Point(0,-10)});
-//		tipPopup.setLatLng(new L.LatLng(list[i].resultLat,list[i].resultLon)).setContent(popupContent).openOn(that.map);
-//		tipPopup._sort = "tip-popup";
 		// 坐标纠错或补标
-		$('.coad-result-wrap .poilist > li .coad-data-oper a.dw').click(function() {
+		$('.coad-result-wrap .poilist > li .coad-data-oper a.dw').click(function(event) {
+			//event.stopPropagation(); 
 			$(this).css('background-position', '-18px -180px');
 			var $li = $(this).closest('li');
 			if ($li.hasClass('draggabled')) {
@@ -1031,6 +1015,27 @@ G.Geocoding = {
 				currentPopup.setContent(newPopupContent);
 				currentMarker.openPopup();					
 				$('.custom-popup .leaflet-popup-close-button').addClass('finish');
+				$('.custom-popup .leaflet-popup-close-button.finish').click(function(fe) {
+					fe.preventDefault();
+					var lngStr = latlng.lng.toString();
+					var latStr = latlng.lat.toString();
+					var url = G.restUrl + "/geocode/batchUpdate?batchId=" + that.batchId + "&lineNumber=" + $li.attr('type')
+					+ "&resultAddress=&resultLon=" + lngStr.substring(0, lngStr.indexOf('.') + 9)  + "&resultLat=" + latStr.substring(0, lngStr.indexOf('.') + 9);
+					$.ajax({
+							url: url,
+							dataType : "jsonp",
+							jsonp : "callback",
+							success : function(data) {
+								if (data.status == "ok") {
+									var currentPage = $('#data-page-turn span.layui-laypage-curr > em:last-child').text();
+									var batchType = $('.coad-result-wrap .data-radio .types-select a.on').index() + 1;
+									return that.getBatchList(currentPage, batchType);
+								} else {
+									return layer.alert(data.message, {icon: 3});
+								}
+							}
+					});
+				});
 				that.map.flyTo(latlng);
 				
 				// 修改服务端坐标，刷新页面
@@ -1054,33 +1059,11 @@ G.Geocoding = {
 //				});
 			});
 			
-			// 右键事件 结束拖动
-			currentMarker.on('contextmenu', function(e) {
-				var latlng = e.target.getLatLng();
-				var lngStr = latlng.lng.toString();
-				var latStr = latlng.lat.toString();
-				var url = G.restUrl + "/geocode/batchUpdate?batchId=" + that.batchId + "&lineNumber=" + $li.attr('type')
-				+ "&resultAddress=&resultLon=" + lngStr.substring(0, lngStr.indexOf('.') + 9)  + "&resultLat=" + latStr.substring(0, lngStr.indexOf('.') + 9);
-				$.ajax({
-						url: url,
-						dataType : "jsonp",
-						jsonp : "callback",
-						success : function(data) {
-							if (data.status == "ok") {
-								var currentPage = $('#data-page-turn span.layui-laypage-curr > em:last-child').text();
-								var batchType = $('.coad-result-wrap .data-radio .types-select a.on').index() + 1;
-								return that.getBatchList(currentPage, batchType);
-							} else {
-								return layer.alert(data.message, {icon: 3});
-							}
-						}
-				});
-			});
-			
 		});
 		
 		// 单一地址编辑纠错
-		$('.coad-result-wrap .poilist > li .coad-data-oper a.bj').click(function() {
+		$('.coad-result-wrap .poilist > li .coad-data-oper a.bj').click(function(event) {
+			event.stopPropagation(); 
 			var $li = $(this).closest('li');
 			if ($li.hasClass('nomatch')) {
 				return ;
@@ -1119,7 +1102,8 @@ G.Geocoding = {
 		});
 		
 		// 删除
-		$('.coad-result-wrap .poilist > li .coad-data-oper a.sc').click(function() {
+		$('.coad-result-wrap .poilist > li .coad-data-oper a.sc').click(function(event) {
+			event.stopPropagation(); 
 			var $li = $(this).closest('li');
 			 var isDelete = false;
 			 layer.msg('确定删除！', {
