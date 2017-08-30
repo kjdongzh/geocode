@@ -469,7 +469,7 @@ G.Geocoding = {
 									iconSize:     [21, 26],
 									iconAnchor:   [10.5, 26]
 								});
-								mark = L.marker([list[i].resultLat, list[i].resultLon], {icon: _icon});
+								mark = L.marker([list[i].resultLat, list[i].resultLon], {icon: _icon, id: i});
 								
 							} else {
 								var _icon = L.icon({
@@ -477,7 +477,7 @@ G.Geocoding = {
 									iconSize:     [1, 1],
 									iconAnchor:   [10.5, 26]
 								});
-								mark = L.marker([failLat, failLon], {icon: _icon});
+								mark = L.marker([failLat, failLon], {icon: _icon, id: i});
 							}
 							
 							popupContent = "<div class='tz-edit'>";
@@ -487,6 +487,10 @@ G.Geocoding = {
 							mark.bindPopup(popupContent, {className: 'custom-popup'});
 							mark.on('popupopen', function() {
 								$('.custom-popup .leaflet-popup-close-button').addClass('close');
+							});
+							mark.on('click', function(e) {
+								var index = e.target.options.id;
+								$('.coad-result-wrap .poilist>li').eq(index).click();
 							});
 							that.vectorLayer.addLayer(mark);
 						}
@@ -815,14 +819,14 @@ G.Geocoding = {
 								iconSize:     [21, 26],
 								iconAnchor:   [10.5, 26]
 							});
-							mark = L.marker([list[i].resultLat, list[i].resultLon], {icon: _icon});
+							mark = L.marker([list[i].resultLat, list[i].resultLon], {icon: _icon, id: i});
 						} else {
 							var _icon = L.icon({
 								iconUrl: G.root + '/images/num0.png',
 								iconSize:     [1, 1],
 								iconAnchor:   [10.5, 26]
 							});
-							mark = L.marker([failLat, failLon], {icon: _icon});
+							mark = L.marker([failLat, failLon], {icon: _icon, id: i});
 						}
 						
 						popupContent = "<div class='tz-edit'>";
@@ -833,6 +837,10 @@ G.Geocoding = {
 						mark.bindPopup(popupContent, {className: 'custom-popup'});
 						mark.on('popupopen', function() {
 							$('.custom-popup .leaflet-popup-close-button').addClass('close');
+						});
+						mark.on('click', function(e) {
+							var index = e.target.options.id;
+							$('.coad-result-wrap .poilist>li').eq(index).click();
 						});
 						that.vectorLayer.addLayer(mark);
 					}
