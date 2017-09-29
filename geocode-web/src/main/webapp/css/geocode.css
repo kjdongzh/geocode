@@ -91,6 +91,7 @@
 .coad-data-oper a{ float: left; display: inline-block; width: 18px; height: 18px; background: url(../images/sprite.png) no-repeat; margin-left: 10px;}
 .coad-data-oper a.bj{ background-position: 0 -162px;}
 .coad-data-oper a.dw{ background-position: -18px -162px;}
+.coad-data-oper a.hov{ background-position: -18px -180px;}
 .coad-data-oper a.sc{ background-position: -36px -162px;}
 .coad-data-oper a.bj:hover{ background-position: 0 -180px;}
 .coad-data-oper a.dw:hover{ background-position: -18px -180px;}
