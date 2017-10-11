@@ -133,8 +133,8 @@
 		</div>
 		<div class="popup-close"></div>
 		<div class="import-data-btn coad-data-btn">
-			<button>重新匹配</button>
 			<button>保存修改</button>
+			<button>重新匹配</button>
 		</div>
 	</div>
 	

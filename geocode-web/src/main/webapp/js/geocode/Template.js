@@ -73,6 +73,25 @@ G.Template = {
 	template.helper('formatDistance', function(value) {
 		return parseInt(value / 1000);
 	});
+	
+	//保留8位有效小数，不足补0
+	template.helper('toDecimal8', function(value) {
+		var f = parseFloat(value);    
+        if (isNaN(f)) {    
+            return false;    
+        }    
+        var f = Math.round(value*100000000)/100000000;    
+        var s = f.toString();    
+        var rs = s.indexOf('.');    
+        if (rs < 0) {    
+            rs = s.length;    
+            s += '.';    
+        }    
+        while (s.length <= rs + 8) {    
+            s += '0';    
+        }    
+        return s;    
+	});
 
 	template.helper('formatSeconds', function(value) {
 		var theTime = parseInt(value * 60);// 秒

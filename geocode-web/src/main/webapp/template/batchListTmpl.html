@@ -11,8 +11,8 @@
 				{{if result.status == "success"}}
 					<h4><a href="#" title="{{result.resultAddress}}">{{result.resultAddress}}</a></h4>
 					<ul>
-						<li style="width: 140px;">经度<span class="span-lng">{{result.resultLon}}</span></li>
-						<li>纬度<br><span class="span-lat">{{result.resultLat}}</span></li>
+						<li style="width: 140px;">经度<span class="span-lng">{{result.resultLon | toDecimal8}}</span></li>
+						<li>纬度<br><span class="span-lat">{{result.resultLat | toDecimal8}}</span></li>
 					</ul>
 				{{else}}
 					{{if geocodeType == "positive"}}
@@ -21,8 +21,8 @@
 						<h4><a href="#">{{result.searchLon}}-{{result.searchLat}}</a></h4>
 					{{/if}}
 					<ul>
-						<li style="width: 140px;">经度<span class="span-lng">{{result.resultLon}}</span></li>
-						<li>纬度<br><span class="span-lat">{{result.resultLat}}</span></li>
+						<li style="width: 140px;">经度<span class="span-lng">{{result.resultLon | toDecimal8}}</span></li>
+						<li>纬度<br><span class="span-lat">{{result.resultLat | toDecimal8}}</span></li>
 					</ul>
 				{{/if}}
 			</div>

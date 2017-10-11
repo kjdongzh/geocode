@@ -14,29 +14,7 @@ G.Geocoding = {
 		layui.use('laypage', function() { });
 		
 		// 测试，实际应用中注释掉
-		var that = this;
-		layui.use('laypage', function(laypage) {
-			laypage({
-			    cont: 'data-page-turn',
-			    curr: 1,
-		        pages: 6,
-		        first: false,
-		        last: 6,
-		        groups: 3,
-		        prev: '<em><</em>',
-		        next: '<em>></em>',
-		        skin: '#1E9FFF',
-		        jump: function(obj, first){
-		        	if (!first) {
-		        		var curr = obj.curr;
-		        		var type = $('.coad-result-wrap .data-radio .types-select a.on').index() + 1;
-		        		that.getBatchList(curr, type);
-		        	}
-		        }
-		    });
-		});
-		this.batchId = '1eff8ec4be9a459da216f9e71ca826f9_P';
-		//this.batchId = 'c296faad2a97470bb0077bdc53ebe37c_R';
+		this.batchId = '1eff8ec4be9a459da216f9e71ca826f9_P';//'c296faad2a97470bb0077bdc53ebe37c_R'
 		this.popupFields = [['位置坐标(GEO)', '0'],['名称(NAME)', '1'],['简称(JC)', '2'],['所在设区市(SZS)', '3']];
 		this.getBatchList(1);
 	},
@@ -268,7 +246,7 @@ G.Geocoding = {
 		});
 		
 		// 批量修改中重新匹配
-		$('.data-modify-popup > .import-data-btn button').eq(0).click(function() {
+		$('.data-modify-popup > .import-data-btn button').eq(1).click(function() {
 			var url = G.restUrl + "/geocode/rebatch?batchId=" + that.batchId;
 			var index = layer.load();
 			
@@ -289,7 +267,7 @@ G.Geocoding = {
 		});
 		
 		// 批量修改中保存修改
-		$('.data-modify-popup > .import-data-btn button').eq(1).click(function() {
+		$('.data-modify-popup > .import-data-btn button').eq(0).click(function() {
 			var modifys = [];
 			$('.data-modify-popup .zd-form > table tr > td.modified').each(function(index) {
 				var line = $(this).closest('tr').attr('type');
@@ -480,9 +458,9 @@ G.Geocoding = {
 						    cont: 'data-page-turn',
 					        pages: data.batchList.pageSum,
 					        curr: data.batchList.pageNum,
-					        first: false,
-					        last: false,
-					        groups: 4,
+					        first: '首页',
+					        last: '尾页',
+					        groups: 2,
 					        prev: '<em><</em>',
 					        next: '<em>></em>',
 					        skin: '#1E9FFF',
@@ -643,18 +621,29 @@ G.Geocoding = {
 		});
 		
 		// 显示字段添加
-		$('.zd-btn .add').click(function() {
+		$('.data-match-popup .zd-btn .add').click(function() {
 			var index = $('.data-match-popup .select-field > .zd-main > li').length + 1;
 			
-			var html = '<li><a href="javascript:void(0);"><span class="left">' + index + '</span><span class="right">请选择字段</span></a></li>';
-			$('.data-match-popup .select-field .zd-main').append(html);
-			$('.data-match-popup .select-field .zd-main li').on('click', function() {
+			if (index > 1) {
+				var type = $('.data-match-popup .select-field .zd-main>li span.right').eq(index-2).attr('type');
+				if (!type) {
+					return layer.alert('请选择字段', {icon: 2});
+				}
+			}
+			
+			
+			var $html = $('<li><a href="javascript:void(0);"><span class="left">' + index + '</span><span class="right">请选择字段</span></a></li>');
+			$('.data-match-popup .select-field > .zd-main').append($html);
+			$('.data-match-popup .select-field > .zd-main').scrollTop( $('.data-match-popup .zd-main')[0].scrollHeight );
+			$html.on('click', function() {
 				$(this).addClass('select').siblings().removeClass('select');
 			});
-			$('.data-match-popup .select-field span.right').on('click', function() {
-					var index = $(this).parent().parent().index() + 1;
-					$('.select-field .zd-select').css('top', index*30 + 'px');
-					$('.select-field .zd-select').toggle();
+			$html.find('span.right').on('click', function() {
+				var index = $(this).parent().parent().index() + 1;
+				var scrollTop = $(".data-match-popup .select-field > .zd-main").scrollTop();
+				var top = index*30 - parseInt(scrollTop) + 2;
+				$('.data-match-popup .select-field .zd-select').css('top', top + 'px');
+				$('.data-match-popup .select-field .zd-select').toggle();
 			});
 		});
 		
@@ -693,14 +682,19 @@ G.Geocoding = {
 			$('.data-match-popup .select-field > .zd-main > li').each(function(index) {
 				$(this).find('span.left').text(index+1);
 			});
+			$('.data-match-popup .select-field .zd-select').hide();
 		});
 		// 显示字段选项
 		$('.data-match-popup .select-field .zd-select li a').click(function() {
-			var type = $(this).attr('type');
-			var text = $(this).text();
-			$('.select-field .zd-main>li.select span.right').attr('type', type);
-			$('.select-field .zd-main>li.select span.right').text(text);
-			$('.select-field .zd-select').hide();
+			var selected = $(this).hasClass('isSelected');
+			if (!selected) {
+				var type = $(this).attr('type');
+				var text = $(this).text();
+				$('.select-field .zd-main>li.select span.right').attr('type', type);
+				$('.select-field .zd-main>li.select span.right').text(text);
+				$(this).addClass('isSelected');
+				$('.select-field .zd-select').hide();				
+			}
 		});
 		
 		// 数据展示
@@ -796,9 +790,9 @@ G.Geocoding = {
 					    cont: 'data-page-turn',
 				        pages: data.pageSum,
 				        curr: data.pageNum,
-				        first: false,
-				        last: false,
-				        groups: 4,
+				        first: '首页',
+				        last: '尾页',
+				        groups: 2,
 				        prev: '<em><</em>',
 				        next: '<em>></em>',
 				        skin: '#1E9FFF',
@@ -1159,9 +1153,9 @@ G.Geocoding = {
 			event.stopPropagation(); 
 			var $li = $(this).closest('li');
 			 var isDelete = false;
-			 layer.msg('确定删除！', {
-			      icon: 6,
-			      btn: ['是','否','取消'],
+			 layer.confirm('确定删除?', {
+				  icon: 3,
+			      btn: ['是','否'],
 			      yes: function(index){
 			    	  isDelete = true;
 			    	  layer.close(index);

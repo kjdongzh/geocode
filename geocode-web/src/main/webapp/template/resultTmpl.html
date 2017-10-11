@@ -6,8 +6,8 @@
 			<h4><a href="#" title="{{result.address}}">{{result.address}}</a></h4>
 			{{if result.location}}
 			<ul>
-				<li style="width: 140px;">经度<span>{{result.location.lon}}</span></li>
-				<li>纬度<br><span>{{result.location.lat}}</span></li>
+				<li style="width: 140px;">经度<span>{{result.location.lon | toDecimal8}}</span></li>
+				<li>纬度<br><span>{{result.location.lat | toDecimal8}}</span></li>
 			</ul>
 			{{/if}}
 		</div>
