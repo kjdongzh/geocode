@@ -1,25 +1,32 @@
 <!-- 上传完成后返回字段头、字段值 -->
 <ul>
 	<li>
-		<label>匹配字段</label>
-		<div class="input-box match">
-			{{if geocodeType == 1}}
-				<label>地址</label>
-			{{else}}
-				<label>经度</label>
-			{{/if}}
-			<span></span>
-			<ul class="data-match-field">
-				{{each columns as column index}}
-					<li>
-						<a href="javascript:void(0)" type="{{index}}">{{column}}</a>
-					</li>
-				{{/each}}
-			</ul>
-		</div>
-		{{if geocodeType == 2}}
+		{{if geocodeType == 1}}
+			<label>地址字段</label>
+			<div class="input-box match">
+				<span></span>
+				<ul class="data-match-field">
+					{{each columns as column index}}
+						<li>
+							<a href="javascript:void(0)" type="{{index}}">{{column}}</a>
+						</li>
+					{{/each}}
+				</ul>
+			</div>
+		{{else}}
+			<label>经度字段</label>
+			<div class="input-box match">
+				<span></span>
+				<ul class="data-match-field">
+					{{each columns as column index}}
+						<li>
+							<a href="javascript:void(0)" type="{{index}}">{{column}}</a>
+						</li>
+					{{/each}}
+				</ul>
+			</div>
+			<label>纬度字段</label>
 			<div class="input-box match" style="margin-top: 10px">
-				<label>纬度</label>
 				<span></span>
 				<ul class="data-match-field">
 					{{each columns as column index}}

@@ -159,6 +159,9 @@
 			<button>取消</button>
 		</div>
 	</div>
+	
+	<!-- 坐标显示面板 -->
+	<div class="latlng-bar"></div>
 
 	<div id="map"></div>
 	

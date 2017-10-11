@@ -36,6 +36,13 @@ G.Geocoding = {
 
 		that.vectorLayer = new L.FeatureGroup();
 	    that.map.addLayer(that.vectorLayer);
+	    
+	    // 显示坐标
+	    that.map.addEventListener('mousemove', function(ev) {
+    	   var lat = parseFloat(ev.latlng.lat).toFixed(8);
+    	   var lng = parseFloat(ev.latlng.lng).toFixed(8);
+    	   $('.latlng-bar').html(lat + "," + lng);
+    	});
 	},
 	
 	initEvent : function() {
@@ -110,30 +117,32 @@ G.Geocoding = {
 		
 		$(".add-field-popup .upload-file").click(function() {
 			$(this).val('');
+			$(this).prev().prev().val('');
 		})
 		
 		$(".add-field-popup .upload-file").change(function() {
 		    var name = this.files && this.files.length ?
 		          this.files[0].name : this.value.replace(/^C:\\fakepath\\/i, '');
 		    $(this).prev().prev().val(name);
+		    $(this).attr('value', name);
 		})
 		
-		// 确定上传
+		// 添加文件下一步
 		$('.add-field-popup .import-data-btn button').eq(0).click(function() {
 			var fileName = $('.upload-file').prev().prev().val();
 			if (!fileName) {
 				return layer.alert('请先选择文件', {icon: 3});
 			} else {
-				//$(this).next().click();
+				that.geocodeType = $('.add-field-popup .types-select a.on').index() + 1;
 				that.upload();
 			}
 		});
 		
-		// 取消上传
+		// 添加文件取消
 		$('.add-field-popup .import-data-btn button').eq(1).click(function() {
 			$('.translucent-bg').hide();
 			$('.add-field-popup').hide();
-			$('.upload-file').prev().prev().val('');
+			$('.add-field-popup .upload-file').prev().prev().val('');
 			$('.add-field-popup .types-select a').eq(0).addClass('on').siblings().removeClass('on');
 		});
 		
@@ -142,6 +151,10 @@ G.Geocoding = {
 			$('.data-match-popup .keep-con').html('');
 			$('.data-match-popup').hide();
 			$('.add-field-popup').show();
+			
+			var $upload = $(".add-field-popup .upload-file");
+			var name = $upload.attr('value');
+			$upload.prev().prev().val(name);
 		});
 		
 		// 数据匹配完成-批量编码
@@ -365,9 +378,11 @@ G.Geocoding = {
 							
 						});
 					} else {
+						$('.coad-result-wrap').hide();
 						return layer.alert("未查到匹配内容", {icon: 2});
 					}
 				} else {
+					$('.coad-result-wrap').hide();
 					return layer.alert(data.message, {icon: 2});
 				}
 			}
@@ -404,7 +419,10 @@ G.Geocoding = {
 							$('.data-match-popup').css('margin-top', '-255px');
 						}
 						that.bindDataMatchEvent();
-						$('.add-field-popup .import-data-btn button').eq(1).click();
+						//$('.add-field-popup .import-data-btn button').eq(1).click();
+						$('.add-field-popup').hide();
+						$('.add-field-popup .upload-file').prev().prev().val('');
+						$('.add-field-popup .types-select a').eq(0).addClass('on').siblings().removeClass('on');
 						$('.data-match-popup').show();
 					});
 				}
@@ -442,6 +460,8 @@ G.Geocoding = {
 		    contentType: false,
 			success : function(data) {
 				layer.close(loadingIndex);
+				$('.search-tab-form .search-tab-con .src-tab-list .src-form input').val('');
+				$('.search-tab-form .src-tab-tit li').eq(that.geocodeType-1).click();
 				if (data.status == "ok") {
 					that.batchId = data.batchId;
 					G.Template.render("batchListTmpl", data.batchList, function(html) {
@@ -507,11 +527,13 @@ G.Geocoding = {
 								mark = L.marker([failLat, failLon], {icon: _icon, id: i});
 							}
 							
-							popupContent = "<div class='tz-edit'>";
-							for(var j = 0; j < that.popupFields.length; j++) {
-								popupContent = popupContent + "<p>" + that.popupFields[j][0] + ":  " + list[i][that.popupFields[j][1]]+"</p>";
+							if (that.popupFields.length > 0) {
+								popupContent = "<div class='tz-edit'>";
+								for(var j = 0; j < that.popupFields.length; j++) {
+									popupContent = popupContent + "<p>" + that.popupFields[j][0] + ":  " + list[i][that.popupFields[j][1]]+"</p>";
+								}
+								mark.bindPopup(popupContent, {className: 'custom-popup'});
 							}
-							mark.bindPopup(popupContent, {className: 'custom-popup'});
 							mark.on('popupopen', function() {
 								$('.custom-popup .leaflet-popup-close-button').addClass('close');
 							});
@@ -840,12 +862,14 @@ G.Geocoding = {
 							mark = L.marker([failLat, failLon], {icon: _icon, id: i});
 						}
 						
-						popupContent = "<div class='tz-edit'>";
-						for(var j = 0; j < that.popupFields.length; j++) {
-							popupContent = popupContent + "<p>" + that.popupFields[j][0] + ":  " + list[i][that.popupFields[j][1]]+"</p>";
+						if (that.popupFields.length > 0) {
+							popupContent = "<div class='tz-edit'>";
+							for(var j = 0; j < that.popupFields.length; j++) {
+								popupContent = popupContent + "<p>" + that.popupFields[j][0] + ":  " + list[i][that.popupFields[j][1]]+"</p>";
+							}
+							popupContent += "</div>";
+							mark.bindPopup(popupContent, {className: 'custom-popup'});
 						}
-						popupContent += "</div>";
-						mark.bindPopup(popupContent, {className: 'custom-popup'});
 						mark.on('popupopen', function() {
 							$('.custom-popup .leaflet-popup-close-button').addClass('close');
 						});
@@ -954,6 +978,7 @@ G.Geocoding = {
 					if (i == index) {
 						markers[i].setIcon(newIcon);
 						markers[i].openPopup();
+						markers[i].setZIndexOffset(1000);
 						latlng = markers[i].getLatLng();
 					} else {
 						var flag = $('.coad-result-wrap .poilist>li').eq(i).hasClass('nomatch');
@@ -973,6 +998,7 @@ G.Geocoding = {
 						}
 						
 						markers[i].setIcon(oldIcon);
+						markers[i].setZIndexOffset(0);
 					}
 				}
 				that.map.flyTo(latlng);
