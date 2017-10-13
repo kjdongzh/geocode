@@ -467,11 +467,11 @@ G.Geocoding = {
 					G.Template.render("batchListTmpl", data.batchList, function(html) {
 						$('.coad-result-wrap .poilist').children().remove();
 						$('.coad-result-wrap .poilist').append(html);
-						//$('.data-match-popup').hide();
 						that.hideAllPopup();
 						$('#data-page-turn').show();
 						$('.coad-result-wrap .turn-page').show();
 						$('.coad-result-wrap .data-radio').show();
+						$('.coad-result-wrap .data-radio .types-select a').removeClass('on');
 						$('.coad-result-wrap').show();
 						// 分页
 						layui.laypage({
@@ -598,6 +598,9 @@ G.Geocoding = {
 							var $html = $("<input type='text' value='" + text + "' />");
 							$td.html($html);
 							$html.focus();
+							$html.click(function(event){//防止事件冒泡
+								event.stopPropagation();
+							});
 							$html.blur(function() {
 								var value = $(this).val();
 								if (!value) {
@@ -1200,6 +1203,10 @@ G.Geocoding = {
 			  				success : function(data) {
 			  					if (data.status == "ok") {
 			  						var currentPage = $('#data-page-turn span.layui-laypage-curr > em:last-child').text();
+			  						var length = $('.coad-result-wrap .poilist > li').length;
+			  						if (currentPage > 1 && length == 1) {
+			  							currentPage = currentPage - 1;
+			  						}
 			  						var batchType = $('.coad-result-wrap .data-radio .types-select a.on').index() + 1;
 			  						return that.getBatchList(currentPage, batchType);
 			  					} else {
