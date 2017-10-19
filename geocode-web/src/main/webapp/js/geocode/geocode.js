@@ -349,33 +349,45 @@ G.Geocoding = {
 						G.Template.render("resultTmpl", data, function(html) {
 							$('.coad-result-wrap .poilist').append(html);
 							
-							var _icon = L.icon({
-								iconUrl: G.root + '/images/num1.png',
-								iconSize:     [21, 26],
-								iconAnchor:   [10.5, 26]
-							});
-							var mark = L.marker([result.location.lat, result.location.lon], {icon: _icon});
+							if (result.wkt) {
+								var featureLayer = omnivore.wkt.parse(result.wkt);
+							    //featureLayer.addTo(map);
+								that.vectorLayer.addLayer(featureLayer);
+							    var featureBounds = featureLayer.getBounds();
+								that.map.fitBounds(featureBounds);
+							} else {								
 							
-							var popupContent = "<div class='tz-edit'><p>省份:  " + result.province + "</p>"
-											+ "<p>城市:  " + result.city + "</p>";
-							
-							// 小比例尺下只显示到省级或市级，即没有搜索到相关地址
-							if(result.county && result.county.length > 0) {
-								popupContent = popupContent + "<p>区县:  " + result.county + "</p>"
+								var _icon = L.icon({
+									iconUrl: G.root + '/images/num1.png',
+									iconSize:     [21, 26],
+									iconAnchor:   [10.5, 26]
+								});
+								var mark = L.marker([result.location.lat, result.location.lon], {icon: _icon});
+								
+								var popupContent = "<div class='tz-edit'><p>省份:  " + result.province + "</p>"
+												+ "<p>城市:  " + result.city + "</p>";
+								
+								// 小比例尺下只显示到省级或市级，即没有搜索到相关地址
+								if(result.county && result.county.length > 0) {
+									popupContent = popupContent + "<p>区县:  " + result.county + "</p>"
+								}
+								
+								if(result.town && result.town.length > 0) {
+									popupContent = popupContent + "<p>乡镇:  " + result.town + "</p>"
+								}
+								if (result.address) {
+									popupContent = popupContent + "<p>地址:  " + result.address + "</p>" + "</div>";
+								} else {
+									popupContent = popupContent + "<p>地址:  " + result.name + "</p>" + "</div>";
+								}
+												
+								mark.bindPopup(popupContent, {className: 'custom-popup'}).openPopup();
+								mark.on('popupopen', function() {
+									$('.custom-popup .leaflet-popup-close-button').addClass('close');
+								});
+								that.vectorLayer.addLayer(mark);							
+								that.map.flyTo(L.latLng(result.location.lat, result.location.lon));
 							}
-							
-							if(result.town && result.town.length > 0) {
-								popupContent = popupContent + "<p>乡镇:  " + result.town + "</p>"
-							}
-							popupContent = popupContent + "<p>地址:  " + result.address + "</p>" + "</div>";
-											
-							mark.bindPopup(popupContent, {className: 'custom-popup'}).openPopup();
-							mark.on('popupopen', function() {
-								$('.custom-popup .leaflet-popup-close-button').addClass('close');
-							});
-							that.vectorLayer.addLayer(mark);							
-							that.map.flyTo(L.latLng(result.location.lat, result.location.lon));
-							
 						});
 					} else {
 						$('.coad-result-wrap').hide();

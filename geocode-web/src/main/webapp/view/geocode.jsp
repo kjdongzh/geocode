@@ -169,6 +169,7 @@
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/lib/jquery.form.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/lib/geogis/js/leaflet-src.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/lib/geogis/js/geogis.min.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/lib/leaflet-omnivore.min.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/lib/layer.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/lib/layui.js"></script>
 	<script type="text/javascript" src="${pageContext.request.contextPath}/js/lib/colResizable-1.5.min.js"></script>
